@@ -28,6 +28,6 @@ exports.uploadFile = async (file, folder = 'general') => {
 
         return result.secure_url;
     } catch (error) {
-        throw new AppError(`Failed to upload file to Cloudinary in folder: ${folder}`, 500);
+        throw new AppError(`Failed to upload file`, 500);
     }
 };

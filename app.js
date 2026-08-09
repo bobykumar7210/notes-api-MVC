@@ -28,10 +28,10 @@ async function startServer() {
   try {
     await connectDB();
     app.listen(PORT, () => {
-      console.log(`🚀 Notes API is running on http://localhost:${PORT}`);
+      logger.info(`🚀 Notes API is running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to connect to MongoDB', error);
+    logger.error('Failed to connect to MongoDB', error);
     process.exit(1);
   }
 }

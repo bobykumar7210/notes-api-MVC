@@ -61,3 +61,36 @@
   "statusCode": 200,
   "durationMs": 6
 }
+2026-08-09T11:48:39.150Z [ERROR] Request failed {
+  "timestamp": "2026-08-09T11:48:39.150Z",
+  "level": "ERROR",
+  "message": "Invalid password",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "stack": "Error: Invalid password\n    at exports.loginUser (/home/mohit/Pictures/study/node-project/notes-api-MVC/services/userService.js:58:15)\n    at async exports.loginUser (/home/mohit/Pictures/study/node-project/notes-api-MVC/controllers/userController.js:26:23)"
+}
+2026-08-09T11:48:39.154Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T11:48:39.154Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 110
+}
+2026-08-09T11:50:09.171Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T11:50:09.171Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T11:53:59.784Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T11:53:59.784Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T11:53:59.792Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T11:53:59.792Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
