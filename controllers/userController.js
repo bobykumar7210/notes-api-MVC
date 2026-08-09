@@ -35,10 +35,28 @@ exports.loginUser = async (req, res, next) => {
 
 exports.getUserProfile = async (req, res, next) => {
     try {
-        const username = req.user.username;
-        const user = await userService.getUserByUsername(username);
+        const userId = req.user.id;
+        const user = await userService.getUserById(userId);
         res.json({
             success: true,
+            data: user
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.uploadProfileImage = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            throw new AppError('Profile image is required', 400);
+        }
+
+        const user = await userService.uploadProfileImage(req.user.id, req.file);
+
+        res.json({
+            success: true,
+            message: 'Profile image uploaded successfully',
             data: user
         });
     } catch (err) {

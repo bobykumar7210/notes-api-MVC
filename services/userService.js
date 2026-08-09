@@ -3,6 +3,7 @@ const AppError = require('../utils/AppError.js');
 const { ROLES } = require('../utils/constants');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cloudinaryService = require('./cloudinaryService');
 
 exports.registerUser = async (userData) => {
     const existingUser = await userRepository.getUserByUsername(userData.username);
@@ -14,13 +15,14 @@ exports.registerUser = async (userData) => {
     return await userRepository.createUser(userData);
 };
 
-exports.getUserByUsername = async (username) => {
-    const user = await userRepository.getUserByUsername(username);
+exports.getUserById = async (id) => {
+    const user = await userRepository.getUserById(id);
     if (!user) {
-        throw new AppError(`User with username ${username} not found`, 404);
+        throw new AppError(`User with id ${id} not found`, 404);
     }
     return user;
-};
+};  
+
 
 exports.getAllUsers = async () => {
     return await userRepository.getAllUsers();
@@ -33,6 +35,19 @@ exports.deleteUser = async (id) => {
     }
     return user;
 };
+
+exports.uploadProfileImage = async (userId, file) => {
+    const user = await userRepository.getUserById(userId);
+    if (!user) {
+        throw new AppError('User not found', 404);
+    }
+
+    const imageUrl = await cloudinaryService.uploadFile(file, `notes-api/profiles/${userId}`);
+    user.profileImage = imageUrl;
+    await user.save();
+    return user;
+};
+
 exports.loginUser = async (username, password) => {
     const user = await userRepository.getUserByUsername(username);
     if (!user) {

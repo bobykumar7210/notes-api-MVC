@@ -6,10 +6,9 @@ exports.createNote = async (req, res,next) => {
     try {
     const { title } = req.body;
     if (!title || title.trim() === "") {
-        
         throw new AppError("Title is required", 400)
     }
-    const note = await NoteService.createNote(title);
+    const note = await NoteService.createNote(title, req.user.id);
 
     res.status(201).json({
         success: true,
@@ -23,23 +22,20 @@ exports.createNote = async (req, res,next) => {
 
 exports.getAllNotes = async (req, res, next) => {
     try {
-
-        const notes = await NoteService.getAllNotes();
-
-        res.json(notes);
-
+        const notes = await NoteService.getAllNotes(req.user.id);
+        res.json({
+            success: true,
+            data: notes
+        });
     } catch (err) {
-
         next(err);
-
     }
-
 };
 
 exports.getNoteById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const note = await NoteService.getNoteById(id);
+        const note = await NoteService.getNoteById(id, req.user.id);
         res.json({
             success: true,
             data: note
@@ -55,7 +51,7 @@ exports.updateNote = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { title } = req.body;
-        const note = await NoteService.updateNote(id, title);
+        const note = await NoteService.updateNote(id, title, req.user.id);
         res.json({
             success: true,
             data: note
@@ -68,7 +64,7 @@ exports.updateNote = async (req, res, next) => {
 exports.deleteNote = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const note = await NoteService.deleteNote(id);
+        const note = await NoteService.deleteNote(id, req.user.id);
         res.json({
             success: true,
             data: note
