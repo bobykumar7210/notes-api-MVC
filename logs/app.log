@@ -268,3 +268,342 @@
   "statusCode": 200,
   "durationMs": 3
 }
+2026-08-09T15:20:49.243Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T15:20:49.243Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T15:20:49.252Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T15:20:49.252Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T15:20:57.403Z [INFO] GET / 200 {
+  "timestamp": "2026-08-09T15:20:57.403Z",
+  "level": "INFO",
+  "message": "GET / 200",
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 3
+}
+2026-08-09T15:24:52.104Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T15:24:52.104Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T15:24:52.108Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T15:24:52.108Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T15:24:54.602Z [INFO] GET / 200 {
+  "timestamp": "2026-08-09T15:24:54.602Z",
+  "level": "INFO",
+  "message": "GET / 200",
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 3
+}
+2026-08-09T15:24:57.457Z [INFO] GET / 200 {
+  "timestamp": "2026-08-09T15:24:57.457Z",
+  "level": "INFO",
+  "message": "GET / 200",
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 1
+}
+2026-08-09T15:24:59.349Z [INFO] GET / 200 {
+  "timestamp": "2026-08-09T15:24:59.349Z",
+  "level": "INFO",
+  "message": "GET / 200",
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 1
+}
+2026-08-09T15:25:07.838Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T15:25:07.838Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T15:25:07.851Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T15:25:07.851Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T15:25:09.778Z [INFO] GET / 200 {
+  "timestamp": "2026-08-09T15:25:09.778Z",
+  "level": "INFO",
+  "message": "GET / 200",
+  "method": "GET",
+  "url": "/",
+  "statusCode": 200,
+  "durationMs": 6
+}
+2026-08-09T15:25:34.419Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T15:25:34.419Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T15:25:34.427Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T15:25:34.427Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T15:25:37.837Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:37.837Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 151
+}
+2026-08-09T15:25:38.887Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:38.887Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 104
+}
+2026-08-09T15:25:39.699Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:39.699Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 86
+}
+2026-08-09T15:25:40.573Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:40.573Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 104
+}
+2026-08-09T15:25:41.010Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:41.010Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 77
+}
+2026-08-09T15:25:41.521Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:41.521Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 74
+}
+2026-08-09T15:25:42.050Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:42.050Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 96
+}
+2026-08-09T15:25:42.626Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:42.626Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 85
+}
+2026-08-09T15:25:43.253Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:43.253Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 88
+}
+2026-08-09T15:25:43.799Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:43.799Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 90
+}
+2026-08-09T15:25:44.306Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:44.306Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 110
+}
+2026-08-09T15:25:45.388Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:45.388Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 79
+}
+2026-08-09T15:25:46.239Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:46.239Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 81
+}
+2026-08-09T15:25:47.067Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:47.067Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 85
+}
+2026-08-09T15:25:48.517Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:48.517Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 72
+}
+2026-08-09T15:25:49.396Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:49.396Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 79
+}
+2026-08-09T15:25:50.256Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:50.256Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 82
+}
+2026-08-09T15:25:51.042Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:51.042Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 81
+}
+2026-08-09T15:25:51.915Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:25:51.915Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 79
+}
+2026-08-09T15:27:43.257Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T15:27:43.257Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T15:27:43.260Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T15:27:43.260Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T15:27:46.137Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:27:46.137Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 103
+}
+2026-08-09T15:27:46.999Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:27:46.999Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 82
+}
+2026-08-09T15:27:47.953Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:27:47.953Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 83
+}
+2026-08-09T15:27:48.393Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:27:48.393Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 99
+}
+2026-08-09T15:27:48.949Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T15:27:48.949Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 79
+}
+2026-08-09T15:27:49.547Z [ERROR] POST /users/login 429 {
+  "timestamp": "2026-08-09T15:27:49.547Z",
+  "level": "ERROR",
+  "message": "POST /users/login 429",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 429,
+  "durationMs": 1
+}
+2026-08-09T15:27:50.246Z [ERROR] POST /users/login 429 {
+  "timestamp": "2026-08-09T15:27:50.246Z",
+  "level": "ERROR",
+  "message": "POST /users/login 429",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 429,
+  "durationMs": 2
+}
+2026-08-09T15:28:28.440Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T15:28:28.440Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T15:28:28.443Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T15:28:28.443Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}

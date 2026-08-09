@@ -6,12 +6,13 @@ const validationMiddleware = require('../middlewares/validation/validationMiddle
 const { ROLES } = require('../utils/constants');
 const { uploadProfileImage } = require('../middlewares/uploadMiddleware');
 const { registerValidation, loginValidation } = require('../validators/user.validator');
+const { loginLimiter } = require('../middlewares/rateLimiter');
 
 // POST /users/register - Register a new user
 router.post('/register', registerValidation, validationMiddleware, UserController.registerUser);
 
 // POST /users/login - Login a user
-router.post('/login', loginValidation, validationMiddleware, UserController.loginUser);
+router.post('/login', loginLimiter, loginValidation, validationMiddleware, UserController.loginUser);
 
 router.get('/profile', authMiddleware, UserController.getUserProfile);
 router.post('/profile/image', authMiddleware, uploadProfileImage, UserController.uploadProfileImage);
