@@ -6,8 +6,9 @@ const logger = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
 const connectDB = require('./config/db');
 const app = express();
-const PORT = process.env.PORT || 3000;// Middlewares
-app.use(logger);
+const PORT = process.env.PORT || 3000;
+
+app.use(logger.requestLogger);
 app.use(express.json());
 
 // Routes

@@ -11,3 +11,6 @@ coverage/
 
 # Postman exports
 /docs/postman/
+
+/.github/prompts/
+

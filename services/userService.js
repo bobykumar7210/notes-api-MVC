@@ -61,6 +61,6 @@ exports.loginUser = async (username, password) => {
     if (!jwtSecret) {
         throw new AppError('JWT_SECRET environment variable is required', 500);
     }
-    const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, jwtSecret, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, jwtSecret, { expiresIn: '24h' });
     return token;
 }

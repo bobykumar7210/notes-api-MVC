@@ -1,15 +1,20 @@
+const logger = require('./logger');
+
 exports.errorHandler = (err, req, res, next) => {
-
-    console.error(err);
     err.statusCode = err.statusCode || 500;
-    err.message = err.message || "Internal Server Error";
+    err.message = err.message || 'Internal Server Error';
 
-    res.status(err.statusCode).json({
-
-        success: false,
+    logger.error('Request failed', {
+        method: req.method,
+        url: req.originalUrl || req.url,
         statusCode: err.statusCode,
-        message: err.message
-
+        message: err.message,
+        stack: err.stack,
     });
 
+    res.status(err.statusCode).json({
+        success: false,
+        statusCode: err.statusCode,
+        message: err.message,
+    });
 };

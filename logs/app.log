@@ -1,0 +1,63 @@
+2026-08-09T10:28:36.211Z [ERROR] Request failed {
+  "timestamp": "2026-08-09T10:28:36.211Z",
+  "level": "ERROR",
+  "message": "Invalid or expired token",
+  "method": "GET",
+  "url": "/users",
+  "statusCode": 401,
+  "stack": "Error: Invalid or expired token\n    at module.exports (/home/mohit/Pictures/study/node-project/notes-api-MVC/middlewares/authMiddleware.js:22:17)\n    at Layer.handle [as handle_request] (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/route.js:149:13)\n    at Route.dispatch (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/route.js:119:3)\n    at Layer.handle [as handle_request] (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/layer.js:95:5)\n    at /home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:284:15\n    at router.process_params (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:346:12)\n    at next (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:280:10)\n    at router.handle (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:175:3)\n    at router (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:47:12)\n    at Layer.handle [as handle_request] (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:328:13)\n    at /home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:286:9\n    at router.process_params (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:346:12)\n    at next (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/express/lib/router/index.js:280:10)\n    at jsonParser (/home/mohit/Pictures/study/node-project/notes-api-MVC/node_modules/body-parser/lib/types/json.js:117:7)"
+}
+2026-08-09T10:28:36.216Z [ERROR] GET /users 401 {
+  "timestamp": "2026-08-09T10:28:36.216Z",
+  "level": "ERROR",
+  "message": "GET /users 401",
+  "method": "GET",
+  "url": "/users",
+  "statusCode": 401,
+  "durationMs": 10
+}
+2026-08-09T10:37:02.979Z [ERROR] Request failed {
+  "timestamp": "2026-08-09T10:37:02.979Z",
+  "level": "ERROR",
+  "message": "Invalid password",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "stack": "Error: Invalid password\n    at exports.loginUser (/home/mohit/Pictures/study/node-project/notes-api-MVC/services/userService.js:58:15)\n    at async exports.loginUser (/home/mohit/Pictures/study/node-project/notes-api-MVC/controllers/userController.js:26:23)"
+}
+2026-08-09T10:37:02.982Z [ERROR] POST /users/login 401 {
+  "timestamp": "2026-08-09T10:37:02.982Z",
+  "level": "ERROR",
+  "message": "POST /users/login 401",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 401,
+  "durationMs": 109
+}
+2026-08-09T10:38:03.750Z [INFO] POST /users/login 200 {
+  "timestamp": "2026-08-09T10:38:03.750Z",
+  "level": "INFO",
+  "message": "POST /users/login 200",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 200,
+  "durationMs": 82
+}
+2026-08-09T10:39:31.541Z [INFO] POST /users/login 200 {
+  "timestamp": "2026-08-09T10:39:31.541Z",
+  "level": "INFO",
+  "message": "POST /users/login 200",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 200,
+  "durationMs": 111
+}
+2026-08-09T10:39:47.307Z [INFO] GET /users/profile 200 {
+  "timestamp": "2026-08-09T10:39:47.307Z",
+  "level": "INFO",
+  "message": "GET /users/profile 200",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 200,
+  "durationMs": 6
+}
