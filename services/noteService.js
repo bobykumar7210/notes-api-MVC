@@ -29,7 +29,7 @@ exports.getAllNotes = async (userId) => {
 exports.getNoteById = async (id, userId) => {
     const note = await noteRepository.getNoteByIdAndUser(id, userId);
     if (!note) {
-        throw new AppError(`Note with id ${id} not found`, 404);
+        throw new AppError(`Note not found`, 404);
     }
     return note;
 };
@@ -50,7 +50,7 @@ exports.updateNote = async (id, title, userId, description = '') => {
 
     const note = await noteRepository.updateNoteByUser(id, userId, updateData);
     if (!note) {
-        throw new AppError(`Note with id ${id} not found`, 404);
+        throw new AppError(`Note not found`, 404);
     }
     return note;
 };
@@ -58,7 +58,7 @@ exports.updateNote = async (id, title, userId, description = '') => {
 exports.deleteNote = async (id, userId) => {
     const note = await noteRepository.getNoteByIdAndUser(id, userId);
     if (!note) {
-        throw new AppError(`Note with id ${id} not found`, 404);
+        throw new AppError(`Note not found`, 404);
     }
     return await noteRepository.deleteNoteByUser(id, userId);
 };

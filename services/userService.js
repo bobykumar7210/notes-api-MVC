@@ -6,10 +6,16 @@ const jwt = require('jsonwebtoken');
 const cloudinaryService = require('./cloudinaryService');
 
 exports.registerUser = async (userData) => {
-    const existingUser = await userRepository.getUserByUsername(userData.username);
-    if (existingUser) {
+    const existingUserByUsername = await userRepository.getUserByUsername(userData.username);
+    if (existingUserByUsername) {
         throw new AppError(`Username ${userData.username} is already taken`, 400);
     }
+
+    const existingUserByEmail = await userRepository.getUserByEmail(userData.email);
+    if (existingUserByEmail) {
+        throw new AppError(`Email ${userData.email} is already registered`, 400);
+    }
+
     userData.password = await bcrypt.hash(userData.password, 10);
     userData.role = userData.role || ROLES.USER;
     return await userRepository.createUser(userData);
@@ -18,7 +24,7 @@ exports.registerUser = async (userData) => {
 exports.getUserById = async (id) => {
     const user = await userRepository.getUserById(id);
     if (!user) {
-        throw new AppError(`User with id ${id} not found`, 404);
+        throw new AppError(`User not found`, 404);
     }
     return user;
 };  
@@ -31,7 +37,7 @@ exports.getAllUsers = async () => {
 exports.deleteUser = async (id) => {
     const user = await userRepository.deleteUserById(id);
     if (!user) {
-        throw new AppError(`User with id ${id} not found`, 404);
+        throw new AppError(`User not found`, 404);
     }
     return user;
 };

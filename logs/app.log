@@ -94,3 +94,177 @@
   "level": "INFO",
   "message": "🚀 Notes API is running on http://localhost:3000"
 }
+2026-08-09T12:59:57.348Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T12:59:57.348Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T12:59:57.351Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T12:59:57.351Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T13:00:10.367Z [INFO] GET /notes 200 {
+  "timestamp": "2026-08-09T13:00:10.367Z",
+  "level": "INFO",
+  "message": "GET /notes 200",
+  "method": "GET",
+  "url": "/notes",
+  "statusCode": 200,
+  "durationMs": 16
+}
+2026-08-09T13:10:48.202Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T13:10:48.202Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T13:10:48.205Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T13:10:48.205Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T13:10:53.120Z [INFO] GET /users/profile 200 {
+  "timestamp": "2026-08-09T13:10:53.120Z",
+  "level": "INFO",
+  "message": "GET /users/profile 200",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 200,
+  "durationMs": 16
+}
+2026-08-09T13:10:56.133Z [INFO] GET /users/profile 200 {
+  "timestamp": "2026-08-09T13:10:56.133Z",
+  "level": "INFO",
+  "message": "GET /users/profile 200",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 200,
+  "durationMs": 3
+}
+2026-08-09T13:12:33.847Z [INFO] GET /users/profile 200 {
+  "timestamp": "2026-08-09T13:12:33.847Z",
+  "level": "INFO",
+  "message": "GET /users/profile 200",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 200,
+  "durationMs": 4
+}
+2026-08-09T13:12:45.554Z [ERROR] POST /users/register 400 {
+  "timestamp": "2026-08-09T13:12:45.554Z",
+  "level": "ERROR",
+  "message": "POST /users/register 400",
+  "method": "POST",
+  "url": "/users/register",
+  "statusCode": 400,
+  "durationMs": 15
+}
+2026-08-09T13:13:03.344Z [ERROR] POST /users/register 400 {
+  "timestamp": "2026-08-09T13:13:03.344Z",
+  "level": "ERROR",
+  "message": "POST /users/register 400",
+  "method": "POST",
+  "url": "/users/register",
+  "statusCode": 400,
+  "durationMs": 2
+}
+2026-08-09T13:13:07.423Z [ERROR] POST /users/register 400 {
+  "timestamp": "2026-08-09T13:13:07.423Z",
+  "level": "ERROR",
+  "message": "POST /users/register 400",
+  "method": "POST",
+  "url": "/users/register",
+  "statusCode": 400,
+  "durationMs": 1
+}
+2026-08-09T13:13:23.059Z [INFO] POST /users/register 201 {
+  "timestamp": "2026-08-09T13:13:23.059Z",
+  "level": "INFO",
+  "message": "POST /users/register 201",
+  "method": "POST",
+  "url": "/users/register",
+  "statusCode": 201,
+  "durationMs": 102
+}
+2026-08-09T13:13:33.932Z [ERROR] POST /users/register 400 {
+  "timestamp": "2026-08-09T13:13:33.932Z",
+  "level": "ERROR",
+  "message": "POST /users/register 400",
+  "method": "POST",
+  "url": "/users/register",
+  "statusCode": 400,
+  "durationMs": 3
+}
+2026-08-09T13:13:47.251Z [INFO] POST /users/login 200 {
+  "timestamp": "2026-08-09T13:13:47.251Z",
+  "level": "INFO",
+  "message": "POST /users/login 200",
+  "method": "POST",
+  "url": "/users/login",
+  "statusCode": 200,
+  "durationMs": 79
+}
+2026-08-09T13:14:01.648Z [INFO] GET /users/profile 200 {
+  "timestamp": "2026-08-09T13:14:01.648Z",
+  "level": "INFO",
+  "message": "GET /users/profile 200",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 200,
+  "durationMs": 3
+}
+2026-08-09T13:14:05.355Z [ERROR] GET /notes/6a784441454118a93125bbb9 404 {
+  "timestamp": "2026-08-09T13:14:05.355Z",
+  "level": "ERROR",
+  "message": "GET /notes/6a784441454118a93125bbb9 404",
+  "method": "GET",
+  "url": "/notes/6a784441454118a93125bbb9",
+  "statusCode": 404,
+  "durationMs": 4
+}
+2026-08-09T13:15:27.465Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-09T13:15:27.465Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-09T13:15:27.475Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-09T13:15:27.475Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-09T13:15:30.105Z [ERROR] GET /notes/6a784441454118a93125bbb9 404 {
+  "timestamp": "2026-08-09T13:15:30.105Z",
+  "level": "ERROR",
+  "message": "GET /notes/6a784441454118a93125bbb9 404",
+  "method": "GET",
+  "url": "/notes/6a784441454118a93125bbb9",
+  "statusCode": 404,
+  "durationMs": 15
+}
+2026-08-09T13:15:41.419Z [INFO] POST /notes 201 {
+  "timestamp": "2026-08-09T13:15:41.419Z",
+  "level": "INFO",
+  "message": "POST /notes 201",
+  "method": "POST",
+  "url": "/notes",
+  "statusCode": 201,
+  "durationMs": 27
+}
+2026-08-09T13:15:46.386Z [INFO] GET /notes 200 {
+  "timestamp": "2026-08-09T13:15:46.386Z",
+  "level": "INFO",
+  "message": "GET /notes 200",
+  "method": "GET",
+  "url": "/notes",
+  "statusCode": 200,
+  "durationMs": 6
+}
+2026-08-09T13:16:06.345Z [INFO] GET /notes/6a787d7d4bfe408f3f96f1ad 200 {
+  "timestamp": "2026-08-09T13:16:06.345Z",
+  "level": "INFO",
+  "message": "GET /notes/6a787d7d4bfe408f3f96f1ad 200",
+  "method": "GET",
+  "url": "/notes/6a787d7d4bfe408f3f96f1ad",
+  "statusCode": 200,
+  "durationMs": 3
+}

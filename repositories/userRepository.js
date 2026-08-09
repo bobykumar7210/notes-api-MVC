@@ -9,6 +9,10 @@ exports.getUserByUsername = async (username) => {
     return await User.findOne({ username });
 };
 
+exports.getUserByEmail = async (email) => {
+    return await User.findOne({ email });
+};
+
 exports.getUserById = async (id) => {
     return await User.findById(id).select('-password');
 };

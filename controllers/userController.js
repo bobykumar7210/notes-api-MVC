@@ -3,11 +3,11 @@ const AppError = require('../utils/AppError');
 
 exports.registerUser = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
-        if (!username || !password) {
-            throw new AppError('Username and password are required', 400);
+        const { username, email, password } = req.body;
+        if (!username || !email || !password) {
+            throw new AppError('Username, email, and password are required', 400);
         }
-        const user = await userService.registerUser({ username, password });
+        const user = await userService.registerUser({ username, email, password });
         res.status(201).json({
             success: true,
             data: user
