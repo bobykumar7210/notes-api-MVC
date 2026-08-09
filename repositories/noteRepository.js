@@ -1,10 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const AppError = require('../utils/AppError.js');
 const Note = require("../models/Note");
-
-const DATA_FILE = path.join(__dirname, '../data/notes.json');
-
 
 exports.saveNote = async (note) => {
     return await Note.create(note);

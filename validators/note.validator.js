@@ -1,12 +1,14 @@
 const { body, param } = require('express-validator');
 
 exports.createNoteValidation = [
-  body('title').trim().notEmpty().withMessage('Title is required')
+  body('title').trim().notEmpty().withMessage('Title is required'),
+  body('description').optional().isString().withMessage('Description must be a string')
 ];
 
 exports.updateNoteValidation = [
   param('id').isMongoId().withMessage('Invalid note ID'),
-  body('title').trim().notEmpty().withMessage('Title is required')
+  body('title').trim().notEmpty().withMessage('Title is required'),
+  body('description').optional().isString().withMessage('Description must be a string')
 ];
 
 exports.getNoteByIdValidation = [

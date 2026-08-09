@@ -4,11 +4,11 @@ const AppError = require("../utils/AppError.js");
 
 exports.createNote = async (req, res,next) => {
     try {
-    const { title } = req.body;
+    const { title, description } = req.body;
     if (!title || title.trim() === "") {
         throw new AppError("Title is required", 400)
     }
-    const note = await NoteService.createNote(title, req.user.id);
+    const note = await NoteService.createNote(title, req.user.id, description);
 
     res.status(201).json({
         success: true,
@@ -50,8 +50,8 @@ exports.getNoteById = async (req, res, next) => {
 exports.updateNote = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { title } = req.body;
-        const note = await NoteService.updateNote(id, title, req.user.id);
+        const { title, description } = req.body;
+        const note = await NoteService.updateNote(id, title, req.user.id, description);
         res.json({
             success: true,
             data: note

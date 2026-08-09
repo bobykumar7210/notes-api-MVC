@@ -1,7 +1,7 @@
 const noteRepository = require('../repositories/noteRepository');
 const AppError = require('../utils/AppError.js');
 
-exports.createNote = async (title, userId) => {
+exports.createNote = async (title, userId, description = '') => {
     if (!userId) {
         throw new AppError('User is required to create a note', 400);
     }
@@ -13,6 +13,7 @@ exports.createNote = async (title, userId) => {
     const note = {
         userId,
         title: title.trim(),
+        description: description ? description.trim() : ''
     };
 
     return await noteRepository.saveNote(note);
@@ -33,7 +34,7 @@ exports.getNoteById = async (id, userId) => {
     return note;
 };
 
-exports.updateNote = async (id, title, userId) => {
+exports.updateNote = async (id, title, userId, description = '') => {
     if (!userId) {
         throw new AppError('User is required', 400);
     }
@@ -42,7 +43,12 @@ exports.updateNote = async (id, title, userId) => {
         throw new AppError("Title cannot be 'admin'", 400);
     }
 
-    const note = await noteRepository.updateNoteByUser(id, userId, { title: title.trim() });
+    const updateData = {
+        title: title.trim(),
+        description: description ? description.trim() : ''
+    };
+
+    const note = await noteRepository.updateNoteByUser(id, userId, updateData);
     if (!note) {
         throw new AppError(`Note with id ${id} not found`, 404);
     }
