@@ -1,40 +1,44 @@
 # Notes API
 
-A RESTful Notes API built with Node.js, Express, MongoDB, and Mongoose. The project follows an MVC-inspired layered architecture and supports authenticated users, per-user notes, and profile image uploads with Cloudinary.
+Notes API is a RESTful backend built with Node.js, Express, MongoDB, and Mongoose. It follows an MVC-inspired structure and supports JWT authentication, role-based access control, per-user notes, and profile image uploads with Cloudinary.
 
 ## Features
 
-- JWT-based user authentication
-- Role-based authorization for administrator-only user management
+- User registration and login with JWT authentication
+- Token-based authorization for protected routes
+- Admin-only user management endpoints
 - Create, read, update, and delete notes
-- Notes are user-scoped, so a user only sees their own notes
-- Note fields include `title` and `description`
-- Profile image upload with Cloudinary
-- Image-only upload validation with size limit of 5 MB
+- Notes are scoped to the authenticated user
+- Profile image upload and storage with Cloudinary
 - Request validation with `express-validator`
-- Centralized error handling and request logging
-- Password hashing with bcrypt
+- Password hashing with `bcryptjs`
+- Email-based user registration with unique email enforcement
+- Global request rate limiting and login attempt throttling
+- Centralized error handling and structured API responses
 
-## Technology Stack
+## Tech Stack
 
-- Node.js and Express
-- MongoDB and Mongoose
-- JSON Web Tokens (`jsonwebtoken`)
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+- JSON Web Token (`jsonwebtoken`)
 - bcryptjs
 - express-validator
+- express-rate-limit
 - multer
-- cloudinary
+- Cloudinary
 
 ## Prerequisites
 
 - Node.js 16 or later
 - npm
-- A running local MongoDB instance
-- A Cloudinary account with API credentials
+- MongoDB running locally or a reachable MongoDB URI
+- A Cloudinary account and API credentials
 
-## Installation
+## Setup
 
-1. Clone the repository and open the project directory.
+1. Clone the repository and move into the project folder.
 
    ```bash
    cd notes-api-MVC
@@ -57,7 +61,7 @@ A RESTful Notes API built with Node.js, Express, MongoDB, and Mongoose. The proj
    CLOUDINARY_API_SECRET=your_api_secret
    ```
 
-4. Start the API.
+4. Start the server.
 
    ```bash
    npm start
@@ -69,34 +73,34 @@ A RESTful Notes API built with Node.js, Express, MongoDB, and Mongoose. The proj
    npm run dev
    ```
 
-The server is available at `http://localhost:3000` by default.
+The API runs at `http://localhost:3000` by default.
 
 ## Authentication
 
-Register a user, then sign in to receive a JWT. Include the token on every protected request:
+Register a user, log in, and include the JWT on protected requests:
 
 ```http
 Authorization: Bearer <token>
 ```
 
-Tokens expire after one hour. New registrations receive the `user` role by default. The `GET /users` and `DELETE /users/:id` endpoints require an admin token.
+Tokens expire after 24 hours. New users are created with the `user` role by default. The profile image upload and profile lookup endpoints require authentication, while `GET /users` and `DELETE /users/:id` require the `admin` role.
 
 ## API Reference
 
 ### Health Check
 
-| Method | Endpoint | Authentication | Description |
+| Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
-| `GET` | `/` | No | Returns API status information. |
+| `GET` | `/` | No | Returns a welcome message and API version. |
 
 ### Users
 
-| Method | Endpoint | Authentication | Description |
+| Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
 | `POST` | `/users/register` | No | Register a new user. |
 | `POST` | `/users/login` | No | Authenticate a user and return a JWT. |
-| `GET` | `/users/profile` | JWT | Get the current user's profile. |
-| `POST` | `/users/profile/image` | JWT | Upload and store a profile image. |
+| `GET` | `/users/profile` | JWT | Get the authenticated user profile. |
+| `POST` | `/users/profile/image` | JWT | Upload a profile image. |
 | `GET` | `/users` | Admin JWT | List all users. |
 | `DELETE` | `/users/:id` | Admin JWT | Delete a user by ID. |
 
@@ -108,6 +112,7 @@ Content-Type: application/json
 
 {
   "username": "jane",
+  "email": "jane@example.com",
   "password": "secure-password"
 }
 ```
@@ -124,7 +129,7 @@ Content-Type: application/json
 }
 ```
 
-Successful responses include a token:
+Successful login responses return a token:
 
 ```json
 {
@@ -147,8 +152,10 @@ Form field:
 profileImage: <image file>
 ```
 
-Allowed image MIME types:
+Allowed file types:
+
 - `image/jpeg`
+- `image/jpg`
 - `image/png`
 - `image/webp`
 - `image/gif`
@@ -161,11 +168,11 @@ All note endpoints require a valid JWT.
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| `POST` | `/notes` | Create a note for the current user. |
-| `GET` | `/notes` | Retrieve all notes for the current user. |
-| `GET` | `/notes/:id` | Retrieve a note by MongoDB ID if it belongs to the current user. |
-| `PUT` | `/notes/:id` | Update a note if it belongs to the current user. |
-| `DELETE` | `/notes/:id` | Delete a note if it belongs to the current user. |
+| `POST` | `/notes` | Create a note for the authenticated user. |
+| `GET` | `/notes` | Retrieve all notes for the authenticated user. |
+| `GET` | `/notes/:id` | Retrieve a note by ID if it belongs to the authenticated user. |
+| `PUT` | `/notes/:id` | Update a note if it belongs to the authenticated user. |
+| `DELETE` | `/notes/:id` | Delete a note if it belongs to the authenticated user. |
 
 #### Create a Note
 
@@ -176,13 +183,14 @@ Content-Type: application/json
 
 {
   "title": "Prepare project update",
-  "description": "Final review of the project roadmap and release tasks"
+  "description": "Review the roadmap, release tasks, and deployment checklist"
 }
 ```
 
 Validation rules:
-- `title` is required and max 255 characters
-- `description` is optional and max 2000 characters
+
+- `title` is required and must be at most 255 characters
+- `description` is optional and must be at most 2000 characters
 - `admin` is reserved and cannot be used as a note title
 
 #### Update a Note
@@ -200,7 +208,7 @@ Content-Type: application/json
 
 ## Response Format
 
-Successful single-resource requests generally return:
+Successful responses typically follow this shape:
 
 ```json
 {
@@ -209,7 +217,7 @@ Successful single-resource requests generally return:
 }
 ```
 
-Errors are returned in a consistent shape:
+Error responses use a consistent structure:
 
 ```json
 {
@@ -219,14 +227,36 @@ Errors are returned in a consistent shape:
 }
 ```
 
+## Rate Limiting
+
+The API uses `express-rate-limit` to protect the application from abusive traffic and brute-force login attempts.
+
+- Global API limiter: 100 requests per 15 minutes per IP
+- Login limiter: 5 login attempts per 15 minutes per IP
+- Rate-limit violations return the app's standard error format via the custom `AppError` handler
+
+The app applies the global limiter in `app.js`, and the login-specific limiter should be attached to the login route in `routes/userRoute.js` for targeted protection.
+
+Example response on limit exceed:
+
+```json
+{
+  "success": false,
+  "statusCode": 429,
+  "message": "Too many requests from this IP, please try again after 15 minutes"
+}
+```
+
+These middlewares are defined in `middlewares/rateLimiter.js` and are applied in `app.js`.
+
 ## Project Structure
 
 ```text
 notes-api-MVC/
 ├── config/          # Database and Cloudinary configuration
 ├── controllers/     # HTTP request handlers
-├── docs/            # Setup docs and Postman exports
-├── middlewares/     # Authentication, authorization, validation, errors, logging, upload
+├── docs/            # Setup docs
+├── middlewares/     # Authentication, authorization, validation, error handling, logging, upload
 ├── models/          # Mongoose schemas
 ├── repositories/    # Database access layer
 ├── routes/          # API route definitions
@@ -234,14 +264,13 @@ notes-api-MVC/
 ├── utils/           # Shared utilities and constants
 ├── validators/      # Request validation rules
 ├── app.js           # Application entry point
-├── .env.example     # Example environment configuration
-├── package.json     # Dependencies and scripts
+├── package.json     # Scripts and dependencies
 └── README.md        # Project documentation
 ```
 
 ## Additional Documentation
 
-See the [setup guide](docs/setup.md) for a concise setup reference.
+See the [setup guide](docs/setup.md) for a shorter installation reference.
 
 ## License
 
