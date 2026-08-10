@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ROLES } = require('../utils/constants');
+const { ROLES, USER_STATUS } = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -28,6 +28,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: [ROLES.ADMIN, ROLES.USER],
         default: ROLES.USER
+    },
+    status: {
+        type: String,
+        enum: [USER_STATUS.ACTIVE, USER_STATUS.DELETED],
+        default: USER_STATUS.ACTIVE,
+        index: true
+    },
+    deletedAt: {
+        type: Date,
+        default: null
     }
 });
 

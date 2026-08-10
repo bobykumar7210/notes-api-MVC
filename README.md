@@ -1,19 +1,25 @@
 # Notes API
 
-RESTful Notes backend built with **Node.js**, **Express**, and **MongoDB**. The project follows an MVC-inspired layered architecture with JWT authentication, role-based access control, per-user notes, and Cloudinary-backed profile image uploads.
+RESTful Notes backend built with **Node.js**, **Express**, and **MongoDB**. The project follows an MVC-inspired layered architecture with JWT authentication, role-based access control, soft-delete lifecycles, paginated search, and Cloudinary-backed profile image uploads.
 
 ## Features
 
 - User registration and login with JWT authentication
 - Role-based access control (`user` / `admin`)
-- CRUD notes scoped to the authenticated user
+- Soft-delete for users (`active` / `deleted`) with admin restore
+- Deleted users cannot log in or use JWT-protected routes
+- Notes CRUD scoped to the authenticated user
+- Note status lifecycle: `active` → `archived` → `deleted` (soft delete)
+- Trash notes auto hard-delete after **30 days** (MongoDB TTL on `deletedAt`)
+- Paginated note list with search (`q`) and status filter
+- Archive / restore note endpoints
+- Admin platform stats (`GET /users/stats`) for users and notes
+- Paginated admin user list with search
 - Profile image upload via Multer and Cloudinary
 - Request validation with `express-validator`
 - Password hashing with `bcryptjs`
-- Unique username and email enforcement
 - Global rate limiting and login attempt throttling
-- Centralized error handling and consistent API responses
-- Request logging middleware
+- Centralized error handling and request logging
 
 ## Tech Stack
 
@@ -39,7 +45,10 @@ npm install
 cp .env.example .env
 # Edit .env with your MongoDB URI, JWT secret, and Cloudinary credentials
 
-# 3. Run the API
+# 3. Bootstrap the first admin (once)
+npm run seed:admin
+
+# 4. Run the API
 npm run dev    # development (nodemon)
 # or
 npm start      # production
@@ -54,6 +63,9 @@ The API listens on `http://localhost:3000` by default.
 | `npm start` | Start the server with Node |
 | `npm run dev` | Start with Nodemon (auto-restart) |
 | `npm test` | Run Jest tests |
+| `npm run seed:admin` | Create the first admin from seed env vars |
+
+Seed vars (see `.env.example`): `SEED_ADMIN_USERNAME`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`.
 
 ## Authentication
 
@@ -66,9 +78,26 @@ Authorization: Bearer <token>
 ```
 
 - Tokens expire after **24 hours**
-- New accounts default to the `user` role
-- Profile endpoints require a valid JWT
-- `GET /users` and `DELETE /users/:id` require the `admin` role
+- New accounts from `POST /users/register` always receive the `user` role
+- Soft-deleted accounts cannot log in; existing JWTs are rejected by auth middleware
+- Bootstrap the first admin with `npm run seed:admin` (no public admin registration)
+
+## Status model
+
+### Notes
+
+| Status | Meaning |
+| --- | --- |
+| `active` | Default; shown in the main notes list |
+| `archived` | Hidden from active list; editable; restorable |
+| `deleted` | Soft-deleted (trash); restorable; purged after 30 days via TTL |
+
+### Users
+
+| Status | Meaning |
+| --- | --- |
+| `active` | Default; can log in |
+| `deleted` | Soft-deleted by admin; can be restored; no login |
 
 ## API Reference
 
@@ -82,12 +111,15 @@ Authorization: Bearer <token>
 
 | Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
-| `POST` | `/users/register` | No | Register a new user |
+| `POST` | `/users/register` | No | Register a new **user** (role always `user`) |
 | `POST` | `/users/login` | No | Authenticate and return a JWT |
 | `GET` | `/users/profile` | JWT | Get the authenticated user profile |
 | `POST` | `/users/profile/image` | JWT | Upload a profile image |
-| `GET` | `/users` | Admin JWT | List all users |
-| `DELETE` | `/users/:id` | Admin JWT | Delete a user by ID |
+| `POST` | `/users/admins` | Admin JWT | Create a new admin user |
+| `GET` | `/users/stats` | Admin JWT | Platform user + notes counts |
+| `GET` | `/users` | Admin JWT | Paginated user list |
+| `PATCH` | `/users/:id/restore` | Admin JWT | Restore a soft-deleted user |
+| `DELETE` | `/users/:id` | Admin JWT | Soft-delete a user |
 
 #### Register
 
@@ -102,11 +134,10 @@ Content-Type: application/json
 }
 ```
 
-Validation:
-
 - `username` — required
-- `email` — required, valid email format
-- `password` — required, minimum 6 characters
+- `email` — required, valid email
+- `password` — required, min 6 characters
+- `role` in the body is ignored (always `user`)
 
 #### Login
 
@@ -120,8 +151,6 @@ Content-Type: application/json
 }
 ```
 
-Example success response:
-
 ```json
 {
   "success": true,
@@ -129,7 +158,58 @@ Example success response:
 }
 ```
 
-#### Upload Profile Image
+#### Admin stats
+
+```http
+GET /users/stats
+Authorization: Bearer <admin-token>
+```
+
+```json
+{
+  "success": true,
+  "data": {
+    "users": { "total": 10, "admins": 2, "normal": 8, "deleted": 1 },
+    "notes": { "total": 40, "active": 30, "archived": 5, "deleted": 5 }
+  }
+}
+```
+
+#### List users (paginated)
+
+```http
+GET /users?page=1&limit=20&status=active&q=jane
+Authorization: Bearer <admin-token>
+```
+
+| Query | Default | Notes |
+| --- | --- | --- |
+| `page` | `1` | Positive integer |
+| `limit` | `20` | 1–100 |
+| `status` | `active` | `active` or `deleted` |
+| `q` | — | Search username or email |
+
+```json
+{
+  "success": true,
+  "data": [/* users without passwords */],
+  "meta": { "page": 1, "limit": 20, "total": 3, "totalPages": 1 }
+}
+```
+
+#### Soft-delete / restore user
+
+```http
+DELETE /users/:id
+Authorization: Bearer <admin-token>
+
+PATCH /users/:id/restore
+Authorization: Bearer <admin-token>
+```
+
+Admins cannot soft-delete their own account.
+
+#### Upload profile image
 
 ```http
 POST /users/profile/image
@@ -141,22 +221,45 @@ Content-Type: multipart/form-data
 | --- | --- | --- |
 | `profileImage` | file | Required |
 
-Allowed MIME types: `image/jpeg`, `image/jpg`, `image/png`, `image/webp`, `image/gif`  
-Maximum size: **5 MB**
+Allowed: `image/jpeg`, `image/jpg`, `image/png`, `image/webp`, `image/gif` — max **5 MB**.
 
 ### Notes
 
-All note endpoints require a valid JWT. Notes are always scoped to the authenticated user.
+All note endpoints require a valid JWT. Notes are scoped to the authenticated user.
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| `POST` | `/notes` | Create a note |
-| `GET` | `/notes` | List notes for the current user |
-| `GET` | `/notes/:id` | Get a note by ID (owner only) |
-| `PUT` | `/notes/:id` | Update a note (owner only) |
-| `DELETE` | `/notes/:id` | Delete a note (owner only) |
+| `POST` | `/notes` | Create a note (`status: active`) |
+| `GET` | `/notes` | List notes (paginated / searchable / filterable) |
+| `GET` | `/notes/:id` | Get a note (not deleted) |
+| `PUT` | `/notes/:id` | Update title/description (active or archived) |
+| `PATCH` | `/notes/:id/archive` | Archive an active note |
+| `PATCH` | `/notes/:id/restore` | Restore archived or deleted → active |
+| `DELETE` | `/notes/:id` | Soft-delete → trash |
 
-#### Create a Note
+#### List notes
+
+```http
+GET /notes?page=1&limit=20&status=active&q=roadmap
+Authorization: Bearer <token>
+```
+
+| Query | Default | Notes |
+| --- | --- | --- |
+| `page` | `1` | Positive integer |
+| `limit` | `20` | 1–100 |
+| `status` | `active` | `active`, `archived`, or `deleted` |
+| `q` | — | Search title or description |
+
+```json
+{
+  "success": true,
+  "data": [/* notes */],
+  "meta": { "page": 1, "limit": 20, "total": 42, "totalPages": 3 }
+}
+```
+
+#### Create a note
 
 ```http
 POST /notes
@@ -165,27 +268,12 @@ Content-Type: application/json
 
 {
   "title": "Prepare project update",
-  "description": "Review the roadmap, release tasks, and deployment checklist"
+  "description": "Review the roadmap and deployment checklist"
 }
 ```
 
-Validation rules:
-
-- `title` — required, max 255 characters; cannot be `"admin"`
-- `description` — optional, max 2000 characters
-
-#### Update a Note
-
-```http
-PUT /notes/:id
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "title": "Updated project update",
-  "description": "Revised tasks and timeline"
-}
-```
+- `title` — required, max 255; cannot be `"admin"`
+- `description` — optional, max 2000
 
 ## Response Format
 
@@ -197,6 +285,8 @@ Success:
   "data": {}
 }
 ```
+
+Paginated lists also include `meta`.
 
 Error:
 
@@ -210,22 +300,12 @@ Error:
 
 ## Rate Limiting
 
-Defined in `middlewares/rateLimiter.js`:
-
 | Limiter | Scope | Limit |
 | --- | --- | --- |
 | Global | All routes | 100 requests / 15 minutes / IP |
 | Login | `POST /users/login` | 5 attempts / 15 minutes / IP |
 
-Exceeded limits return HTTP `429` in the standard error format:
-
-```json
-{
-  "success": false,
-  "statusCode": 429,
-  "message": "Too many requests from this IP, please try again after 15 minutes"
-}
-```
+Exceeded limits return HTTP `429`.
 
 ## Project Structure
 
@@ -235,15 +315,16 @@ notes-api-MVC/
 ├── controllers/      # HTTP request handlers
 ├── docs/             # Setup and supporting documentation
 ├── middlewares/      # Auth, roles, validation, errors, logging, uploads, rate limits
-├── models/           # Mongoose schemas
+├── models/           # Mongoose schemas (status, deletedAt, TTL)
 ├── repositories/     # Data access layer
 ├── routes/           # Route definitions
+├── scripts/          # seedAdmin.js
 ├── services/         # Business logic
 ├── tests/            # Jest tests
 ├── utils/            # Shared utilities and constants
 ├── validators/       # express-validator rule sets
 ├── app.js            # Application entry point
-├── .env.example      # Environment variable template
+├── .env.example
 └── package.json
 ```
 
@@ -256,8 +337,6 @@ Request → Routes → Middleware (auth / validation / rate limit)
                  → Repositories
                  → Models / MongoDB
 ```
-
-This separation keeps HTTP concerns, business rules, and persistence isolated and easier to test.
 
 ## Documentation
 

@@ -17,6 +17,22 @@ exports.registerUser = async (req, res, next) => {
     }
 };
 
+exports.createAdminUser = async (req, res, next) => {
+    try {
+        const { username, email, password } = req.body;
+        if (!username || !email || !password) {
+            throw new AppError('Username, email, and password are required', 400);
+        }
+        const user = await userService.createAdminUser({ username, email, password });
+        res.status(201).json({
+            success: true,
+            data: user
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 exports.loginUser = async (req, res, next) => {
     try {
         const { username, password } = req.body;
@@ -66,10 +82,23 @@ exports.uploadProfileImage = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
     try {
-        const users = await userService.getAllUsers();
+        const result = await userService.getAllUsers(req.query);
         res.json({
             success: true,
-            data: users
+            data: result.data,
+            meta: result.meta
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.getAdminStats = async (req, res, next) => {
+    try {
+        const stats = await userService.getAdminStats();
+        res.json({
+            success: true,
+            data: stats
         });
     } catch (err) {
         next(err);
@@ -79,10 +108,24 @@ exports.getAllUsers = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
     try {
         const userId = req.params.id;
-        await userService.deleteUser(userId);
+        await userService.deleteUser(userId, req.user.id);
         res.json({
             success: true,
             message: 'User deleted successfully'
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.restoreUser = async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const user = await userService.restoreUser(userId);
+        res.json({
+            success: true,
+            data: user,
+            message: 'User restored successfully'
         });
     } catch (err) {
         next(err);
