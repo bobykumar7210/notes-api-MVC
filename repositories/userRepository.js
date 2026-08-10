@@ -1,6 +1,18 @@
 const User = require('../models/User');
 const { USER_STATUS } = require('../utils/constants');
 
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const ACTIVE_CLAUSE = {
+    $or: [
+        { status: USER_STATUS.ACTIVE },
+        { status: { $exists: false } },
+        { status: null }
+    ]
+};
+
+exports.ACTIVE_CLAUSE = ACTIVE_CLAUSE;
+
 exports.createUser = async (userData) => {
     const user = new User(userData);
     return await user.save();
@@ -18,31 +30,50 @@ exports.getUserById = async (id) => {
     return await User.findById(id).select('-password');
 };
 
-exports.getAllUsers = async (status = USER_STATUS.ACTIVE) => {
+exports.countUsers = async (filter = {}) => {
+    return await User.countDocuments(filter);
+};
+
+exports.findUsers = async ({ status = USER_STATUS.ACTIVE, q, page = 1, limit = 20 } = {}) => {
+    const clauses = [];
+
     if (status === USER_STATUS.ACTIVE) {
-        return await User.find(
-            {
-                $or: [
-                    { status: USER_STATUS.ACTIVE },
-                    { status: { $exists: false } },
-                    { status: null }
-                ]
-            },
-            '-password'
-        );
+        clauses.push(ACTIVE_CLAUSE);
+    } else {
+        clauses.push({ status });
     }
-    return await User.find({ status }, '-password');
+
+    if (q) {
+        const pattern = new RegExp(escapeRegex(q), 'i');
+        clauses.push({
+            $or: [{ username: pattern }, { email: pattern }]
+        });
+    }
+
+    const filter = clauses.length === 1 ? clauses[0] : { $and: clauses };
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+        User.find(filter, '-password').sort({ username: 1 }).skip(skip).limit(limit),
+        User.countDocuments(filter)
+    ]);
+
+    return {
+        data,
+        meta: {
+            page,
+            limit,
+            total,
+            totalPages: total === 0 ? 0 : Math.ceil(total / limit)
+        }
+    };
 };
 
 exports.softDeleteUserById = async (id) => {
     return await User.findOneAndUpdate(
         {
             _id: id,
-            $or: [
-                { status: USER_STATUS.ACTIVE },
-                { status: { $exists: false } },
-                { status: null }
-            ]
+            ...ACTIVE_CLAUSE
         },
         { status: USER_STATUS.DELETED, deletedAt: new Date() },
         { new: true }

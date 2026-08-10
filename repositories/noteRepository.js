@@ -78,3 +78,7 @@ exports.softDeleteNoteByUser = async (id, userId) => {
     { new: true }
   );
 };
+
+exports.countNotes = async (filter = {}) => {
+  return await Note.countDocuments(filter);
+};

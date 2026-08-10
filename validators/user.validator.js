@@ -17,7 +17,10 @@ exports.listUsersValidation = [
   query('status')
     .optional()
     .isIn([USER_STATUS.ACTIVE, USER_STATUS.DELETED])
-    .withMessage('Status must be active or deleted')
+    .withMessage('Status must be active or deleted'),
+  query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer').toInt(),
+  query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100').toInt(),
+  query('q').optional().isString().withMessage('Search query must be a string').isLength({ max: 100 }).withMessage('Search query must be at most 100 characters')
 ];
 
 exports.userIdValidation = [

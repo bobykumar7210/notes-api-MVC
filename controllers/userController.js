@@ -1,6 +1,5 @@
 const userService = require('../services/userService');
 const AppError = require('../utils/AppError');
-const { USER_STATUS } = require('../utils/constants');
 
 exports.registerUser = async (req, res, next) => {
     try {
@@ -83,11 +82,23 @@ exports.uploadProfileImage = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
     try {
-        const status = req.query.status || USER_STATUS.ACTIVE;
-        const users = await userService.getAllUsers(status);
+        const result = await userService.getAllUsers(req.query);
         res.json({
             success: true,
-            data: users
+            data: result.data,
+            meta: result.meta
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.getAdminStats = async (req, res, next) => {
+    try {
+        const stats = await userService.getAdminStats();
+        res.json({
+            success: true,
+            data: stats
         });
     } catch (err) {
         next(err);

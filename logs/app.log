@@ -1754,3 +1754,339 @@
   "statusCode": 304,
   "durationMs": 5
 }
+2026-08-10T11:33:12.029Z [INFO] GET /users?status=active&page=1&limit=20 200 {
+  "timestamp": "2026-08-10T11:33:12.029Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 200",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 200,
+  "durationMs": 5
+}
+2026-08-10T11:33:46.855Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T11:33:46.855Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 7
+}
+2026-08-10T11:33:46.872Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T11:33:46.872Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 15
+}
+2026-08-10T11:34:12.821Z [ERROR] GET /users/stats 404 {
+  "timestamp": "2026-08-10T11:34:12.821Z",
+  "level": "ERROR",
+  "message": "GET /users/stats 404",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 404,
+  "durationMs": 3
+}
+2026-08-10T11:34:12.827Z [ERROR] GET /users/stats 404 {
+  "timestamp": "2026-08-10T11:34:12.827Z",
+  "level": "ERROR",
+  "message": "GET /users/stats 404",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 404,
+  "durationMs": 0
+}
+2026-08-10T11:34:12.834Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:34:12.834Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 6
+}
+2026-08-10T11:34:12.843Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:34:12.843Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 5
+}
+2026-08-10T11:34:30.962Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T11:34:30.962Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T11:34:30.970Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T11:34:30.970Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T11:35:08.635Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T11:35:08.635Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T11:35:08.642Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T11:35:08.642Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T11:35:15.343Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T11:35:15.343Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 22
+}
+2026-08-10T11:35:15.351Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T11:35:15.351Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 6
+}
+2026-08-10T11:35:15.398Z [INFO] GET /users/stats 200 {
+  "timestamp": "2026-08-10T11:35:15.398Z",
+  "level": "INFO",
+  "message": "GET /users/stats 200",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 200,
+  "durationMs": 22
+}
+2026-08-10T11:35:15.403Z [INFO] GET /users?status=active&page=1&limit=20 200 {
+  "timestamp": "2026-08-10T11:35:15.403Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 200",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 200,
+  "durationMs": 24
+}
+2026-08-10T11:35:15.412Z [INFO] GET /users/stats 304 {
+  "timestamp": "2026-08-10T11:35:15.412Z",
+  "level": "INFO",
+  "message": "GET /users/stats 304",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 304,
+  "durationMs": 12
+}
+2026-08-10T11:35:15.420Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:35:15.420Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 11
+}
+2026-08-10T11:35:23.028Z [INFO] GET /users/stats 304 {
+  "timestamp": "2026-08-10T11:35:23.028Z",
+  "level": "INFO",
+  "message": "GET /users/stats 304",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 304,
+  "durationMs": 8
+}
+2026-08-10T11:35:23.034Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:35:23.034Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 8
+}
+2026-08-10T11:35:23.043Z [INFO] GET /users/stats 304 {
+  "timestamp": "2026-08-10T11:35:23.043Z",
+  "level": "INFO",
+  "message": "GET /users/stats 304",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 304,
+  "durationMs": 12
+}
+2026-08-10T11:35:23.047Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:35:23.047Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 8
+}
+2026-08-10T11:35:35.124Z [INFO] GET /users?status=active&page=1&limit=20&q=a 200 {
+  "timestamp": "2026-08-10T11:35:35.124Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20&q=a 200",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20&q=a",
+  "statusCode": 200,
+  "durationMs": 11
+}
+2026-08-10T11:35:35.813Z [INFO] GET /users?status=active&page=1&limit=20&q=ad 200 {
+  "timestamp": "2026-08-10T11:35:35.813Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20&q=ad 200",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20&q=ad",
+  "statusCode": 200,
+  "durationMs": 8
+}
+2026-08-10T11:35:36.827Z [INFO] GET /users?status=active&page=1&limit=20&q=admin 200 {
+  "timestamp": "2026-08-10T11:35:36.827Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20&q=admin 200",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20&q=admin",
+  "statusCode": 200,
+  "durationMs": 8
+}
+2026-08-10T11:35:38.503Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:35:38.503Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 9
+}
+2026-08-10T11:36:02.711Z [INFO] GET /users/stats 304 {
+  "timestamp": "2026-08-10T11:36:02.711Z",
+  "level": "INFO",
+  "message": "GET /users/stats 304",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 304,
+  "durationMs": 9
+}
+2026-08-10T11:36:02.712Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:36:02.712Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 8
+}
+2026-08-10T11:36:02.721Z [INFO] GET /users/stats 304 {
+  "timestamp": "2026-08-10T11:36:02.721Z",
+  "level": "INFO",
+  "message": "GET /users/stats 304",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 304,
+  "durationMs": 8
+}
+2026-08-10T11:36:02.727Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:36:02.727Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 13
+}
+2026-08-10T11:37:33.745Z [INFO] GET /users/stats 304 {
+  "timestamp": "2026-08-10T11:37:33.745Z",
+  "level": "INFO",
+  "message": "GET /users/stats 304",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 304,
+  "durationMs": 11
+}
+2026-08-10T11:38:14.348Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T11:38:14.348Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T11:38:14.351Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T11:38:14.351Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T11:38:22.151Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T11:38:22.151Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 24
+}
+2026-08-10T11:38:22.159Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T11:38:22.159Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 6
+}
+2026-08-10T11:38:22.194Z [INFO] GET /users/stats 304 {
+  "timestamp": "2026-08-10T11:38:22.194Z",
+  "level": "INFO",
+  "message": "GET /users/stats 304",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 304,
+  "durationMs": 14
+}
+2026-08-10T11:38:22.207Z [INFO] GET /users/stats 304 {
+  "timestamp": "2026-08-10T11:38:22.207Z",
+  "level": "INFO",
+  "message": "GET /users/stats 304",
+  "method": "GET",
+  "url": "/users/stats",
+  "statusCode": 304,
+  "durationMs": 11
+}
+2026-08-10T11:38:23.446Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:38:23.446Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 10
+}
+2026-08-10T11:38:23.454Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:38:23.454Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 6
+}
+2026-08-10T11:38:57.920Z [INFO] GET /users?status=deleted&page=1&limit=20 200 {
+  "timestamp": "2026-08-10T11:38:57.920Z",
+  "level": "INFO",
+  "message": "GET /users?status=deleted&page=1&limit=20 200",
+  "method": "GET",
+  "url": "/users?status=deleted&page=1&limit=20",
+  "statusCode": 200,
+  "durationMs": 10
+}
+2026-08-10T11:39:01.330Z [INFO] GET /users?status=active&page=1&limit=20 304 {
+  "timestamp": "2026-08-10T11:39:01.330Z",
+  "level": "INFO",
+  "message": "GET /users?status=active&page=1&limit=20 304",
+  "method": "GET",
+  "url": "/users?status=active&page=1&limit=20",
+  "statusCode": 304,
+  "durationMs": 13
+}

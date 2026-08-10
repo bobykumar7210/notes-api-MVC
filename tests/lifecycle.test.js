@@ -59,7 +59,7 @@ describe('User service soft-delete guards', () => {
   });
 
   test('getAllUsers rejects invalid status', async () => {
-    await expect(userService.getAllUsers('nope')).rejects.toMatchObject({
+    await expect(userService.getAllUsers({ status: 'nope' })).rejects.toMatchObject({
       statusCode: 400
     });
   });

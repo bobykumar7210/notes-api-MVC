@@ -1,9 +1,16 @@
 const userRepository = require('../repositories/userRepository');
+const noteRepository = require('../repositories/noteRepository');
 const AppError = require('../utils/AppError.js');
-const { ROLES, USER_STATUS } = require('../utils/constants');
+const { ROLES, USER_STATUS, NOTE_STATUS } = require('../utils/constants');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cloudinaryService = require('./cloudinaryService');
+
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 100;
+
+const ACTIVE_USER_CLAUSE = userRepository.ACTIVE_CLAUSE;
 
 const assertUniqueCredentials = async (username, email) => {
     const existingUserByUsername = await userRepository.getUserByUsername(username);
@@ -52,14 +59,78 @@ exports.getUserById = async (id) => {
         throw new AppError('Account has been deleted', 401);
     }
     return user;
-};  
+};
 
-
-exports.getAllUsers = async (status = USER_STATUS.ACTIVE) => {
+exports.getAllUsers = async (query = {}) => {
+    const status = query.status || USER_STATUS.ACTIVE;
     if (![USER_STATUS.ACTIVE, USER_STATUS.DELETED].includes(status)) {
         throw new AppError('Invalid user status', 400);
     }
-    return await userRepository.getAllUsers(status);
+
+    const page = Math.max(parseInt(query.page, 10) || DEFAULT_PAGE, 1);
+    const requestedLimit = parseInt(query.limit, 10) || DEFAULT_LIMIT;
+    const limit = Math.min(Math.max(requestedLimit, 1), MAX_LIMIT);
+    const q = typeof query.q === 'string' ? query.q.trim() : '';
+
+    return await userRepository.findUsers({
+        status,
+        q: q || undefined,
+        page,
+        limit
+    });
+};
+
+exports.getAdminStats = async () => {
+    const activeNoteClause = {
+        $or: [
+            { status: NOTE_STATUS.ACTIVE },
+            { status: { $exists: false } },
+            { status: null }
+        ]
+    };
+    const notDeletedNoteClause = {
+        $or: [
+            { status: NOTE_STATUS.ACTIVE },
+            { status: NOTE_STATUS.ARCHIVED },
+            { status: { $exists: false } },
+            { status: null }
+        ]
+    };
+
+    const [
+        usersTotal,
+        usersAdmins,
+        usersNormal,
+        usersDeleted,
+        notesActive,
+        notesArchived,
+        notesDeleted,
+        notesTotal
+    ] = await Promise.all([
+        userRepository.countUsers(ACTIVE_USER_CLAUSE),
+        userRepository.countUsers({ $and: [ACTIVE_USER_CLAUSE, { role: ROLES.ADMIN }] }),
+        userRepository.countUsers({ $and: [ACTIVE_USER_CLAUSE, { role: ROLES.USER }] }),
+        userRepository.countUsers({ status: USER_STATUS.DELETED }),
+        noteRepository.countNotes(activeNoteClause),
+        noteRepository.countNotes({ status: NOTE_STATUS.ARCHIVED }),
+        noteRepository.countNotes({ status: NOTE_STATUS.DELETED }),
+        noteRepository.countNotes(notDeletedNoteClause)
+    ]);
+
+    return {
+        users: {
+            total: usersTotal,
+            admins: usersAdmins,
+            normal: usersNormal,
+            deleted: usersDeleted
+        },
+        notes: {
+            total: notesTotal,
+            active: notesActive,
+            archived: notesArchived,
+            deleted: notesDeleted
+        }
+    };
 };
 
 exports.deleteUser = async (id, requesterId) => {
@@ -115,4 +186,4 @@ exports.loginUser = async (username, password) => {
     }
     const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, jwtSecret, { expiresIn: '24h' });
     return token;
-}
+};
