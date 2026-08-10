@@ -30,4 +30,9 @@ describe('Notes API basic checks', () => {
     expect(User.schema.obj.email.required).toBe(true);
     expect(User.schema.obj.email.unique).toBe(true);
   });
+
+  test('user schema includes soft-delete status', () => {
+    expect(User.schema.obj.status).toBeDefined();
+    expect(User.schema.obj.deletedAt).toBeDefined();
+  });
 });

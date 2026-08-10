@@ -1,5 +1,6 @@
 const userService = require('../services/userService');
 const AppError = require('../utils/AppError');
+const { USER_STATUS } = require('../utils/constants');
 
 exports.registerUser = async (req, res, next) => {
     try {
@@ -82,7 +83,8 @@ exports.uploadProfileImage = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
     try {
-        const users = await userService.getAllUsers();
+        const status = req.query.status || USER_STATUS.ACTIVE;
+        const users = await userService.getAllUsers(status);
         res.json({
             success: true,
             data: users
@@ -95,10 +97,24 @@ exports.getAllUsers = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
     try {
         const userId = req.params.id;
-        await userService.deleteUser(userId);
+        await userService.deleteUser(userId, req.user.id);
         res.json({
             success: true,
             message: 'User deleted successfully'
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.restoreUser = async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const user = await userService.restoreUser(userId);
+        res.json({
+            success: true,
+            data: user,
+            message: 'User restored successfully'
         });
     } catch (err) {
         next(err);

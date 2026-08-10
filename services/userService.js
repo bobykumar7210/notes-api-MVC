@@ -1,6 +1,6 @@
 const userRepository = require('../repositories/userRepository');
 const AppError = require('../utils/AppError.js');
-const { ROLES } = require('../utils/constants');
+const { ROLES, USER_STATUS } = require('../utils/constants');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cloudinaryService = require('./cloudinaryService');
@@ -25,7 +25,8 @@ exports.registerUser = async (userData) => {
         username: userData.username,
         email: userData.email,
         password,
-        role: ROLES.USER
+        role: ROLES.USER,
+        status: USER_STATUS.ACTIVE
     });
 };
 
@@ -37,7 +38,8 @@ exports.createAdminUser = async (userData) => {
         username: userData.username,
         email: userData.email,
         password,
-        role: ROLES.ADMIN
+        role: ROLES.ADMIN,
+        status: USER_STATUS.ACTIVE
     });
 };
 
@@ -46,16 +48,34 @@ exports.getUserById = async (id) => {
     if (!user) {
         throw new AppError(`User not found`, 404);
     }
+    if (user.status === USER_STATUS.DELETED) {
+        throw new AppError('Account has been deleted', 401);
+    }
     return user;
 };  
 
 
-exports.getAllUsers = async () => {
-    return await userRepository.getAllUsers();
+exports.getAllUsers = async (status = USER_STATUS.ACTIVE) => {
+    if (![USER_STATUS.ACTIVE, USER_STATUS.DELETED].includes(status)) {
+        throw new AppError('Invalid user status', 400);
+    }
+    return await userRepository.getAllUsers(status);
 };
 
-exports.deleteUser = async (id) => {
-    const user = await userRepository.deleteUserById(id);
+exports.deleteUser = async (id, requesterId) => {
+    if (String(id) === String(requesterId)) {
+        throw new AppError('You cannot delete your own account', 400);
+    }
+
+    const user = await userRepository.softDeleteUserById(id);
+    if (!user) {
+        throw new AppError(`User not found`, 404);
+    }
+    return user;
+};
+
+exports.restoreUser = async (id) => {
+    const user = await userRepository.restoreUserById(id);
     if (!user) {
         throw new AppError(`User not found`, 404);
     }
@@ -66,6 +86,9 @@ exports.uploadProfileImage = async (userId, file) => {
     const user = await userRepository.getUserById(userId);
     if (!user) {
         throw new AppError('User not found', 404);
+    }
+    if (user.status === USER_STATUS.DELETED) {
+        throw new AppError('Account has been deleted', 401);
     }
 
     const imageUrl = await cloudinaryService.uploadFile(file, `notes-api/profiles/${userId}`);
@@ -78,6 +101,9 @@ exports.loginUser = async (username, password) => {
     const user = await userRepository.getUserByUsername(username);
     if (!user) {
         throw new AppError(`User with username ${username} not found`, 404);
+    }
+    if (user.status === USER_STATUS.DELETED) {
+        throw new AppError('This account has been deleted', 401);
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {

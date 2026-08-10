@@ -2,7 +2,7 @@ const NoteService = require("../services/noteService.js");
 const AppError = require("../utils/AppError.js");
 
 
-exports.createNote = async (req, res,next) => {
+exports.createNote = async (req, res, next) => {
     try {
     const { title, description } = req.body;
     if (!title || title.trim() === "") {
@@ -22,10 +22,11 @@ exports.createNote = async (req, res,next) => {
 
 exports.getAllNotes = async (req, res, next) => {
     try {
-        const notes = await NoteService.getAllNotes(req.user.id);
+        const result = await NoteService.getAllNotes(req.user.id, req.query);
         res.json({
             success: true,
-            data: notes
+            data: result.data,
+            meta: result.meta
         });
     } catch (err) {
         next(err);
@@ -74,4 +75,28 @@ exports.deleteNote = async (req, res, next) => {
     }
 };
 
+exports.archiveNote = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const note = await NoteService.archiveNote(id, req.user.id);
+        res.json({
+            success: true,
+            data: note
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
+exports.restoreNote = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const note = await NoteService.restoreNote(id, req.user.id);
+        res.json({
+            success: true,
+            data: note
+        });
+    } catch (err) {
+        next(err);
+    }
+};

@@ -4,8 +4,13 @@ module.exports = {
     USER: 'user'
   },
   NOTE_STATUS: {
-    DRAFT: 'draft',
-    PUBLISHED: 'published',
-    ARCHIVED: 'archived'
-  }
+    ACTIVE: 'active',
+    ARCHIVED: 'archived',
+    DELETED: 'deleted'
+  },
+  USER_STATUS: {
+    ACTIVE: 'active',
+    DELETED: 'deleted'
+  },
+  NOTE_TTL_SECONDS: 30 * 24 * 60 * 60
 };
