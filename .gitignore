@@ -8,3 +8,9 @@ yarn-error.log*
 coverage/
 .vscode/
 .DS_Store
+
+# Postman exports
+/docs/postman/
+
+/.github/prompts/
+

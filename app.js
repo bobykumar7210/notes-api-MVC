@@ -6,11 +6,17 @@ const logger = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
 const connectDB = require('./config/db');
 const app = express();
-const PORT = process.env.PORT || 3000;// Middlewares
-app.use(logger);
+const PORT = process.env.PORT || 3000;
+const {limiter} = require('./middlewares/rateLimiter');
+
+// Apply rate limiting middleware
+app.use(limiter);
+
+// Middleware
+app.use(logger.requestLogger);
 app.use(express.json());
 
-// Routes
+// Home Routes
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Notes API', version: '1.0.0' });
 });
@@ -18,6 +24,7 @@ app.get('/', (req, res) => {
 app.use('/notes', noteRoutes);
 app.use('/users', userRoutes);
 
+// Error handling middleware
 app.use(errorHandler.errorHandler);
 
 // Start server
@@ -27,10 +34,10 @@ async function startServer() {
   try {
     await connectDB();
     app.listen(PORT, () => {
-      console.log(`🚀 Notes API is running on http://localhost:${PORT}`);
+      logger.info(`🚀 Notes API is running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to connect to MongoDB', error);
+    logger.error('Failed to connect to MongoDB', error);
     process.exit(1);
   }
 }

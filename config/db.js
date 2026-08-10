@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
+const logger = require('../middlewares/logger');
 
 const connectDB = async () => {
-
+    
     await mongoose.connect(
-        "mongodb://localhost:27017/notesDB"
+        process.env.MONGO_URI,
     );
 
-    console.log("MongoDB Connected");
+    logger.info("MongoDB Connected");
 
 };
 

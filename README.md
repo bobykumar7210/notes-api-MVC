@@ -1,94 +1,93 @@
 # Notes API
 
-A RESTful Notes API built with Node.js, Express, MongoDB, and Mongoose. The project follows an MVC-inspired layered architecture, separating routing, controllers, services, repositories, and data models.
+RESTful Notes backend built with **Node.js**, **Express**, and **MongoDB**. The project follows an MVC-inspired layered architecture with JWT authentication, role-based access control, per-user notes, and Cloudinary-backed profile image uploads.
 
 ## Features
 
-- JWT-based user authentication
-- Role-based authorization for administrator-only user management
-- Create, read, update, and delete notes
+- User registration and login with JWT authentication
+- Role-based access control (`user` / `admin`)
+- CRUD notes scoped to the authenticated user
+- Profile image upload via Multer and Cloudinary
 - Request validation with `express-validator`
-- Centralized error handling and request logging
-- Password hashing with bcrypt
+- Password hashing with `bcryptjs`
+- Unique username and email enforcement
+- Global rate limiting and login attempt throttling
+- Centralized error handling and consistent API responses
+- Request logging middleware
 
-## Technology Stack
+## Tech Stack
 
-- Node.js and Express
-- MongoDB and Mongoose
-- JSON Web Tokens (`jsonwebtoken`)
-- bcryptjs
-- express-validator
+| Layer | Technology |
+| --- | --- |
+| Runtime | Node.js |
+| Framework | Express |
+| Database | MongoDB + Mongoose |
+| Auth | JSON Web Tokens (`jsonwebtoken`) |
+| Security | `bcryptjs`, `express-rate-limit` |
+| Validation | `express-validator` |
+| Uploads | Multer + Cloudinary |
 
-## Prerequisites
+## Quick Start
 
-- Node.js 16 or later
-- npm
-- A running local MongoDB instance
+For a full walkthrough (MongoDB, Cloudinary, environment variables, verification), see the **[Setup Guide](docs/setup.md)**.
 
-## Installation
+```bash
+# 1. Install dependencies
+npm install
 
-1. Clone the repository and open the project directory.
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your MongoDB URI, JWT secret, and Cloudinary credentials
 
-   ```bash
-   cd notes-api-MVC
-   ```
+# 3. Run the API
+npm run dev    # development (nodemon)
+# or
+npm start      # production
+```
 
-2. Install dependencies.
+The API listens on `http://localhost:3000` by default.
 
-   ```bash
-   npm install
-   ```
+## Scripts
 
-3. Create a `.env` file in the project root.
-
-   ```env
-   PORT=3000
-   JWT_SECRET=replace-with-a-long-random-secret
-   ```
-
-   The application currently connects to MongoDB at `mongodb://localhost:27017/notesDB`.
-
-4. Start the API.
-
-   ```bash
-   npm start
-   ```
-
-   For development with automatic restarts:
-
-   ```bash
-   npm run dev
-   ```
-
-The server is available at `http://localhost:3000` by default.
+| Command | Description |
+| --- | --- |
+| `npm start` | Start the server with Node |
+| `npm run dev` | Start with Nodemon (auto-restart) |
+| `npm test` | Run Jest tests |
 
 ## Authentication
 
-Register a user, then sign in to receive a JWT. Include the token on every `/notes` request and on protected `/users` requests:
+1. Register a user via `POST /users/register`
+2. Log in via `POST /users/login` to receive a JWT
+3. Send the token on protected routes:
 
 ```http
 Authorization: Bearer <token>
 ```
 
-Tokens expire after one hour. New registrations receive the `user` role by default. The `GET /users` and `DELETE /users/:id` endpoints require an `admin` token.
+- Tokens expire after **24 hours**
+- New accounts default to the `user` role
+- Profile endpoints require a valid JWT
+- `GET /users` and `DELETE /users/:id` require the `admin` role
 
 ## API Reference
 
 ### Health Check
 
-| Method | Endpoint | Authentication | Description |
+| Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
-| `GET` | `/` | No | Returns the API welcome message and version. |
+| `GET` | `/` | No | Welcome message and API version |
 
 ### Users
 
-| Method | Endpoint | Authentication | Description |
+| Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
-| `POST` | `/users/register` | No | Register a new user. |
-| `POST` | `/users/login` | No | Authenticate a user and return a JWT. |
-| `GET` | `/users/profile` | JWT | Get the current user's profile. |
-| `GET` | `/users` | Admin JWT | List all users. |
-| `DELETE` | `/users/:id` | Admin JWT | Delete a user by ID. |
+| `POST` | `/users/register` | No | Register a new user |
+| `POST` | `/users/login` | No | Authenticate and return a JWT |
+| `GET` | `/users/profile` | JWT | Get the authenticated user profile |
+| `POST` | `/users/profile/image` | JWT | Upload a profile image |
+| `GET` | `/users` | Admin JWT | List all users |
+| `DELETE` | `/users/:id` | Admin JWT | Delete a user by ID |
 
 #### Register
 
@@ -98,11 +97,16 @@ Content-Type: application/json
 
 {
   "username": "jane",
+  "email": "jane@example.com",
   "password": "secure-password"
 }
 ```
 
-`username` is required and `password` must contain at least six characters.
+Validation:
+
+- `username` — required
+- `email` — required, valid email format
+- `password` — required, minimum 6 characters
 
 #### Login
 
@@ -116,7 +120,7 @@ Content-Type: application/json
 }
 ```
 
-Successful responses include a token:
+Example success response:
 
 ```json
 {
@@ -125,19 +129,34 @@ Successful responses include a token:
 }
 ```
 
+#### Upload Profile Image
+
+```http
+POST /users/profile/image
+Authorization: Bearer <token>
+Content-Type: multipart/form-data
+```
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `profileImage` | file | Required |
+
+Allowed MIME types: `image/jpeg`, `image/jpg`, `image/png`, `image/webp`, `image/gif`  
+Maximum size: **5 MB**
+
 ### Notes
 
-All note endpoints require a valid JWT.
+All note endpoints require a valid JWT. Notes are always scoped to the authenticated user.
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| `POST` | `/notes` | Create a note. |
-| `GET` | `/notes` | Retrieve all notes. |
-| `GET` | `/notes/:id` | Retrieve a note by MongoDB ID. |
-| `PUT` | `/notes/:id` | Update a note title. |
-| `DELETE` | `/notes/:id` | Delete a note by MongoDB ID. |
+| `POST` | `/notes` | Create a note |
+| `GET` | `/notes` | List notes for the current user |
+| `GET` | `/notes/:id` | Get a note by ID (owner only) |
+| `PUT` | `/notes/:id` | Update a note (owner only) |
+| `DELETE` | `/notes/:id` | Delete a note (owner only) |
 
-#### Create or Update a Note
+#### Create a Note
 
 ```http
 POST /notes
@@ -145,15 +164,32 @@ Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "title": "Prepare project update"
+  "title": "Prepare project update",
+  "description": "Review the roadmap, release tasks, and deployment checklist"
 }
 ```
 
-The `title` field is required. The value `admin` is reserved and cannot be used as a title. To update a note, send the same body to `PUT /notes/:id`.
+Validation rules:
+
+- `title` — required, max 255 characters; cannot be `"admin"`
+- `description` — optional, max 2000 characters
+
+#### Update a Note
+
+```http
+PUT /notes/:id
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "title": "Updated project update",
+  "description": "Revised tasks and timeline"
+}
+```
 
 ## Response Format
 
-Successful single-resource requests generally return:
+Success:
 
 ```json
 {
@@ -162,7 +198,7 @@ Successful single-resource requests generally return:
 }
 ```
 
-Errors are returned in a consistent shape:
+Error:
 
 ```json
 {
@@ -172,25 +208,62 @@ Errors are returned in a consistent shape:
 }
 ```
 
+## Rate Limiting
+
+Defined in `middlewares/rateLimiter.js`:
+
+| Limiter | Scope | Limit |
+| --- | --- | --- |
+| Global | All routes | 100 requests / 15 minutes / IP |
+| Login | `POST /users/login` | 5 attempts / 15 minutes / IP |
+
+Exceeded limits return HTTP `429` in the standard error format:
+
+```json
+{
+  "success": false,
+  "statusCode": 429,
+  "message": "Too many requests from this IP, please try again after 15 minutes"
+}
+```
+
 ## Project Structure
 
 ```text
 notes-api-MVC/
-├── config/          # Database connection
-├── controllers/     # HTTP request handlers
-├── middlewares/     # Authentication, authorization, validation, errors, logging
-├── models/          # Mongoose schemas
-├── repositories/    # Database access layer
-├── routes/          # API route definitions
-├── services/        # Business logic
-├── utils/           # Shared utilities and constants
-├── validators/      # Request validation rules
-└── app.js           # Application entry point
+├── config/           # Database and Cloudinary configuration
+├── controllers/      # HTTP request handlers
+├── docs/             # Setup and supporting documentation
+├── middlewares/      # Auth, roles, validation, errors, logging, uploads, rate limits
+├── models/           # Mongoose schemas
+├── repositories/     # Data access layer
+├── routes/           # Route definitions
+├── services/         # Business logic
+├── tests/            # Jest tests
+├── utils/            # Shared utilities and constants
+├── validators/       # express-validator rule sets
+├── app.js            # Application entry point
+├── .env.example      # Environment variable template
+└── package.json
 ```
 
-## Additional Documentation
+## Architecture
 
-See the [setup guide](docs/setup.md) for a concise setup reference.
+```text
+Request → Routes → Middleware (auth / validation / rate limit)
+                 → Controllers
+                 → Services
+                 → Repositories
+                 → Models / MongoDB
+```
+
+This separation keeps HTTP concerns, business rules, and persistence isolated and easier to test.
+
+## Documentation
+
+| Document | Description |
+| --- | --- |
+| [Setup Guide](docs/setup.md) | Prerequisites, environment configuration, and local run steps |
 
 ## License
 
