@@ -17,6 +17,22 @@ exports.registerUser = async (req, res, next) => {
     }
 };
 
+exports.createAdminUser = async (req, res, next) => {
+    try {
+        const { username, email, password } = req.body;
+        if (!username || !email || !password) {
+            throw new AppError('Username, email, and password are required', 400);
+        }
+        const user = await userService.createAdminUser({ username, email, password });
+        res.status(201).json({
+            success: true,
+            data: user
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 exports.loginUser = async (req, res, next) => {
     try {
         const { username, password } = req.body;

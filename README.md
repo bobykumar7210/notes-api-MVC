@@ -54,6 +54,7 @@ The API listens on `http://localhost:3000` by default.
 | `npm start` | Start the server with Node |
 | `npm run dev` | Start with Nodemon (auto-restart) |
 | `npm test` | Run Jest tests |
+| `npm run seed:admin` | Create the first admin from seed env vars |
 
 ## Authentication
 
@@ -66,9 +67,10 @@ Authorization: Bearer <token>
 ```
 
 - Tokens expire after **24 hours**
-- New accounts default to the `user` role
+- New accounts from `POST /users/register` always receive the `user` role
 - Profile endpoints require a valid JWT
-- `GET /users` and `DELETE /users/:id` require the `admin` role
+- `GET /users`, `DELETE /users/:id`, and `POST /users/admins` require the `admin` role
+- Bootstrap the first admin with `npm run seed:admin` (no public admin registration)
 
 ## API Reference
 
@@ -82,10 +84,11 @@ Authorization: Bearer <token>
 
 | Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
-| `POST` | `/users/register` | No | Register a new user |
+| `POST` | `/users/register` | No | Register a new **user** (role always `user`) |
 | `POST` | `/users/login` | No | Authenticate and return a JWT |
 | `GET` | `/users/profile` | JWT | Get the authenticated user profile |
 | `POST` | `/users/profile/image` | JWT | Upload a profile image |
+| `POST` | `/users/admins` | Admin JWT | Create a new admin user |
 | `GET` | `/users` | Admin JWT | List all users |
 | `DELETE` | `/users/:id` | Admin JWT | Delete a user by ID |
 
@@ -107,6 +110,23 @@ Validation:
 - `username` — required
 - `email` — required, valid email format
 - `password` — required, minimum 6 characters
+- `role` from the request body is ignored; the account is always created as `user`
+
+#### Create Admin
+
+```http
+POST /users/admins
+Authorization: Bearer <admin-token>
+Content-Type: application/json
+
+{
+  "username": "ops",
+  "email": "ops@example.com",
+  "password": "secure-password"
+}
+```
+
+Only an authenticated admin can create another admin. Bootstrap the first admin with `npm run seed:admin`.
 
 #### Login
 

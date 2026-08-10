@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const noteRoutes = require('./routes/noteRoutes');
 const userRoutes = require('./routes/userRoute');
 const logger = require('./middlewares/logger');
@@ -13,6 +14,7 @@ const {limiter} = require('./middlewares/rateLimiter');
 app.use(limiter);
 
 // Middleware
+app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }));
 app.use(logger.requestLogger);
 app.use(express.json());
 

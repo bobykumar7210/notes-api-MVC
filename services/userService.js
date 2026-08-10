@@ -5,20 +5,40 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cloudinaryService = require('./cloudinaryService');
 
-exports.registerUser = async (userData) => {
-    const existingUserByUsername = await userRepository.getUserByUsername(userData.username);
+const assertUniqueCredentials = async (username, email) => {
+    const existingUserByUsername = await userRepository.getUserByUsername(username);
     if (existingUserByUsername) {
-        throw new AppError(`Username ${userData.username} is already taken`, 400);
+        throw new AppError(`Username ${username} is already taken`, 400);
     }
 
-    const existingUserByEmail = await userRepository.getUserByEmail(userData.email);
+    const existingUserByEmail = await userRepository.getUserByEmail(email);
     if (existingUserByEmail) {
-        throw new AppError(`Email ${userData.email} is already registered`, 400);
+        throw new AppError(`Email ${email} is already registered`, 400);
     }
+};
 
-    userData.password = await bcrypt.hash(userData.password, 10);
-    userData.role = userData.role || ROLES.USER;
-    return await userRepository.createUser(userData);
+exports.registerUser = async (userData) => {
+    await assertUniqueCredentials(userData.username, userData.email);
+
+    const password = await bcrypt.hash(userData.password, 10);
+    return await userRepository.createUser({
+        username: userData.username,
+        email: userData.email,
+        password,
+        role: ROLES.USER
+    });
+};
+
+exports.createAdminUser = async (userData) => {
+    await assertUniqueCredentials(userData.username, userData.email);
+
+    const password = await bcrypt.hash(userData.password, 10);
+    return await userRepository.createUser({
+        username: userData.username,
+        email: userData.email,
+        password,
+        role: ROLES.ADMIN
+    });
 };
 
 exports.getUserById = async (id) => {

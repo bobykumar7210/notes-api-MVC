@@ -16,6 +16,7 @@ router.post('/login', loginLimiter, loginValidation, validationMiddleware, UserC
 
 router.get('/profile', authMiddleware, UserController.getUserProfile);
 router.post('/profile/image', authMiddleware, uploadProfileImage, UserController.uploadProfileImage);
+router.post('/admins', authMiddleware, roleMiddleware(ROLES.ADMIN), registerValidation, validationMiddleware, UserController.createAdminUser);
 router.get('/', authMiddleware, roleMiddleware(ROLES.ADMIN), UserController.getAllUsers);
 router.delete('/:id', authMiddleware, roleMiddleware(ROLES.ADMIN), UserController.deleteUser);
 

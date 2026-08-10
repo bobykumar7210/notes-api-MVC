@@ -617,3 +617,23 @@
   "level": "INFO",
   "message": "🚀 Notes API is running on http://localhost:3000"
 }
+2026-08-10T10:12:27.473Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T10:12:27.473Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T10:12:27.477Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T10:12:27.477Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T10:30:16.613Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T10:30:16.613Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T10:30:16.616Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T10:30:16.616Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}

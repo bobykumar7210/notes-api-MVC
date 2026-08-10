@@ -50,9 +50,13 @@ cp .env.example .env
 | `PORT` | No | HTTP port (defaults to `3000`) | `3000` |
 | `MONGO_URI` | Yes | MongoDB connection string | `mongodb://localhost:27017/notes-api` |
 | `JWT_SECRET` | Yes | Secret used to sign JWTs — use a long, random value | `replace-with-a-long-random-secret` |
+| `CORS_ORIGIN` | No | Allowed browser origin (defaults to Vite FE) | `http://localhost:5173` |
 | `CLOUDINARY_CLOUD_NAME` | Yes* | Cloudinary cloud name | `your_cloud_name` |
 | `CLOUDINARY_API_KEY` | Yes* | Cloudinary API key | `your_api_key` |
 | `CLOUDINARY_API_SECRET` | Yes* | Cloudinary API secret | `your_api_secret` |
+| `SEED_ADMIN_USERNAME` | For seed | First admin username | `admin` |
+| `SEED_ADMIN_EMAIL` | For seed | First admin email | `admin@example.com` |
+| `SEED_ADMIN_PASSWORD` | For seed | First admin password (min 6 chars) | `admin123456` |
 
 \*Required for profile image upload. Other endpoints can run without Cloudinary if you skip upload features.
 
@@ -62,9 +66,13 @@ Example `.env`:
 PORT=3000
 MONGO_URI=mongodb://localhost:27017/notes-api
 JWT_SECRET=replace-with-a-long-random-secret
+CORS_ORIGIN=http://localhost:5173
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+SEED_ADMIN_USERNAME=admin
+SEED_ADMIN_EMAIL=admin@example.com
+SEED_ADMIN_PASSWORD=admin123456
 ```
 
 Never commit `.env`. It is ignored via `.gitignore`. Keep `.env.example` as the shared template.
@@ -95,6 +103,12 @@ Never commit `.env`. It is ignored via `.gitignore`. Keep `.env.example` as the 
 Profile images are uploaded under the `notes-api/profiles/<userId>` folder path.
 
 ## 6. Start the Server
+
+Seed the first admin once (required because public registration cannot create admins):
+
+```bash
+npm run seed:admin
+```
 
 Development (auto-restart on file changes):
 
