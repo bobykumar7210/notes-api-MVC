@@ -12,19 +12,22 @@ const {
   userIdValidation
 } = require('../validators/user.validator');
 const { loginLimiter } = require('../middlewares/rateLimiter');
-
+ 
 // POST /users/register - Register a new user
 router.post('/register', registerValidation, validationMiddleware, UserController.registerUser);
 
 // POST /users/login - Login a user
 router.post('/login', loginLimiter, loginValidation, validationMiddleware, UserController.loginUser);
 
-router.get('/profile', authMiddleware, UserController.getUserProfile);
-router.post('/profile/image', authMiddleware, uploadProfileImage, UserController.uploadProfileImage);
-router.post('/admins', authMiddleware, roleMiddleware(ROLES.ADMIN), registerValidation, validationMiddleware, UserController.createAdminUser);
-router.get('/stats', authMiddleware, roleMiddleware(ROLES.ADMIN), UserController.getAdminStats);
-router.get('/', authMiddleware, roleMiddleware(ROLES.ADMIN), listUsersValidation, validationMiddleware, UserController.getAllUsers);
-router.patch('/:id/restore', authMiddleware, roleMiddleware(ROLES.ADMIN), userIdValidation, validationMiddleware, UserController.restoreUser);
-router.delete('/:id', authMiddleware, roleMiddleware(ROLES.ADMIN), userIdValidation, validationMiddleware, UserController.deleteUser);
+// Protect all routes below; register and login remain public.
+router.use(authMiddleware);
+
+router.get('/profile', UserController.getUserProfile);
+router.post('/profile/image', uploadProfileImage, UserController.uploadProfileImage);
+router.post('/admins', roleMiddleware(ROLES.ADMIN), registerValidation, validationMiddleware, UserController.createAdminUser);
+router.get('/stats', roleMiddleware(ROLES.ADMIN), UserController.getAdminStats);
+router.get('/', roleMiddleware(ROLES.ADMIN), listUsersValidation, validationMiddleware, UserController.getAllUsers);
+router.patch('/:id/restore', roleMiddleware(ROLES.ADMIN), userIdValidation, validationMiddleware, UserController.restoreUser);
+router.delete('/:id', roleMiddleware(ROLES.ADMIN), userIdValidation, validationMiddleware, UserController.deleteUser);
 
 module.exports = router;

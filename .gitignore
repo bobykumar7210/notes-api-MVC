@@ -6,11 +6,18 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 coverage/
-.vscode/
 .DS_Store
 
-# Postman exports
+# Logs
+logs/
+*.log
+
+# VS Code user data
+.vscode/*
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/settings.json
+
 /docs/postman/
 
 /.github/prompts/
-

@@ -1,0 +1,138 @@
+### Notes API - VS Code REST Client Collection
+### Use the "REST Client" extension (humao.rest-client) in VS Code to run these requests directly.
+
+@baseUrl = http://localhost:3000/api
+@token = YOUR_USER_JWT_TOKEN_HERE
+@adminToken = YOUR_ADMIN_JWT_TOKEN_HERE
+@userId = USER_MONGO_ID_HERE
+@noteId = NOTE_MONGO_ID_HERE
+
+###############################################################################
+# 1. HEALTH CHECK
+###############################################################################
+
+### Health Check (Welcome & Version)
+GET {{baseUrl}}
+
+###############################################################################
+# 2. AUTHENTICATION & USER MANAGEMENT
+###############################################################################
+
+### Register New User (Public - always assigned role: 'user')
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "username": "janedoe",
+  "email": "jane@example.com",
+  "password": "securepassword123"
+}
+
+### User Login (Returns JWT Token)
+# @name login
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "username": "janedoe",
+  "password": "securepassword123"
+}
+
+### Get Authenticated User Profile
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+
+### Upload Profile Image (Requires multipart/form-data)
+POST {{baseUrl}}/users/profile/image
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="profileImage"; filename="avatar.png"
+Content-Type: image/png
+
+< ./avatar.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###############################################################################
+# 3. ADMIN MANAGEMENT (Requires Admin JWT)
+###############################################################################
+
+### Create New Admin User (Admin only)
+POST {{baseUrl}}/users/admins
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "username": "superadmin2",
+  "email": "superadmin2@example.com",
+  "password": "adminpassword123"
+}
+
+### Get Admin Stats (Platform user & note breakdown)
+GET {{baseUrl}}/users/stats
+Authorization: Bearer {{adminToken}}
+
+### List Users (Paginated / Search / Filter)
+GET {{baseUrl}}/users?page=1&limit=20&status=active&q=jane
+Authorization: Bearer {{adminToken}}
+
+### Restore Soft-Deleted User
+PATCH {{baseUrl}}/users/{{userId}}/restore
+Authorization: Bearer {{adminToken}}
+
+### Soft-Delete User
+DELETE {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{adminToken}}
+
+###############################################################################
+# 4. NOTES MANAGEMENT (Requires User JWT - Scoped to Authenticated User)
+###############################################################################
+
+### Create a Note
+POST {{baseUrl}}/notes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Roadmap Q3 Planning",
+  "description": "Finalize feature checklist, API documentation, and architecture diagrams"
+}
+
+### List Notes (Active notes with search and pagination)
+GET {{baseUrl}}/notes?page=1&limit=20&status=active&q=Roadmap
+Authorization: Bearer {{token}}
+
+### List Archived Notes
+GET {{baseUrl}}/notes?status=archived
+Authorization: Bearer {{token}}
+
+### List Deleted Notes (Trash - auto-purged after 30 days via TTL)
+GET {{baseUrl}}/notes?status=deleted
+Authorization: Bearer {{token}}
+
+### Get Single Note by ID
+GET {{baseUrl}}/notes/{{noteId}}
+Authorization: Bearer {{token}}
+
+### Update Note (Active or Archived)
+PUT {{baseUrl}}/notes/{{noteId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Roadmap Q3 Planning (Updated)",
+  "description": "Reviewed and updated deployment timelines and test plans"
+}
+
+### Archive Note
+PATCH {{baseUrl}}/notes/{{noteId}}/archive
+Authorization: Bearer {{token}}
+
+### Restore Note (From Archived or Deleted -> Active)
+PATCH {{baseUrl}}/notes/{{noteId}}/restore
+Authorization: Bearer {{token}}
+
+### Soft-Delete Note (Move to Trash)
+DELETE {{baseUrl}}/notes/{{noteId}}
+Authorization: Bearer {{token}}
