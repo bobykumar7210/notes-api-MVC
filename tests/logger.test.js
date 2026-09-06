@@ -1,14 +1,14 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-
 const logger = require('../middlewares/logger');
 
-test('logger exposes winston-style methods', () => {
-  assert.equal(typeof logger.info, 'function');
-  assert.equal(typeof logger.error, 'function');
-  assert.equal(typeof logger.warn, 'function');
+describe('Logger Middleware', () => {
+  test('logger exposes winston-style methods', () => {
+    expect(typeof logger.info).toBe('function');
+    expect(typeof logger.error).toBe('function');
+    expect(typeof logger.warn).toBe('function');
+  });
+
+  test('logger middleware is a function', () => {
+    expect(typeof logger.requestLogger).toBe('function');
+  });
 });
 
-test('logger middleware is a function', () => {
-  assert.equal(typeof logger.requestLogger, 'function');
-});

@@ -132,7 +132,7 @@ MongoDB Connected
 Open or request:
 
 ```bash
-curl http://localhost:3000/
+curl http://localhost:3000/api
 ```
 
 Expected response:
@@ -149,7 +149,7 @@ Expected response:
 Register:
 
 ```bash
-curl -X POST http://localhost:3000/users/register \
+curl -X POST http://localhost:3000/api/users/register \
   -H "Content-Type: application/json" \
   -d '{"username":"jane","email":"jane@example.com","password":"secure-password"}'
 ```
@@ -157,7 +157,7 @@ curl -X POST http://localhost:3000/users/register \
 Login:
 
 ```bash
-curl -X POST http://localhost:3000/users/login \
+curl -X POST http://localhost:3000/api/users/login \
   -H "Content-Type: application/json" \
   -d '{"username":"jane","password":"secure-password"}'
 ```
@@ -165,11 +165,25 @@ curl -X POST http://localhost:3000/users/login \
 Use the returned token for protected routes:
 
 ```bash
-curl http://localhost:3000/users/profile \
+curl http://localhost:3000/api/users/profile \
   -H "Authorization: Bearer <token>"
 ```
 
-## 8. Run Tests
+## 8. Testing in VS Code or Postman
+
+### VS Code (REST Client)
+1. Install the **REST Client** extension (`humao.rest-client`) or **Thunder Client** in VS Code.
+2. Open [`docs/api.http`](api.http).
+3. Update `@token` and `@adminToken` with your JWTs.
+4. Click **Send Request** above any endpoint to execute it directly inside VS Code.
+
+### Postman
+1. In Postman, click **Import**.
+2. Select [`docs/postman/notes-api.postman_collection.json`](postman/notes-api.postman_collection.json).
+3. Import the environment [`docs/postman/notes-api.postman_environment.json`](postman/notes-api.postman_environment.json).
+4. Set your active environment to `Notes API Local` (configured with `baseUrl: http://localhost:3000/api`).
+
+## 9. Run Tests
 
 ```bash
 npm test
@@ -183,6 +197,7 @@ npm test
 | `JWT_SECRET environment variable is required` | Missing secret | Set `JWT_SECRET` in `.env` |
 | Profile upload fails | Cloudinary misconfigured | Verify all three Cloudinary variables |
 | `401 Unauthorized` | Missing or invalid token | Send `Authorization: Bearer <token>` with a non-expired JWT |
+| `404 Not Found` | Missing `/api` prefix | Ensure requests target `http://localhost:3000/api/...` |
 | `429 Too many requests` | Rate limit hit | Wait for the 15-minute window or reduce request frequency |
 | `EADDRINUSE` | Port already in use | Change `PORT` in `.env` or free the occupied port |
 
@@ -190,3 +205,4 @@ npm test
 
 - Review the full [API reference](../README.md#api-reference) in the project README
 - Explore routes under `routes/` and business logic under `services/`
+

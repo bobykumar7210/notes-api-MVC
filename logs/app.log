@@ -2090,3 +2090,278 @@
   "statusCode": 304,
   "durationMs": 13
 }
+2026-08-10T11:53:36.266Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T11:53:36.266Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T11:53:36.268Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T11:53:36.268Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T12:05:12.988Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T12:05:12.988Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T12:05:12.991Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T12:05:12.991Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T12:05:15.854Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T12:05:15.854Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 25
+}
+2026-08-10T12:05:15.862Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T12:05:15.862Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 7
+}
+2026-08-10T12:05:15.955Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T12:05:15.955Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 13
+}
+2026-08-10T12:05:15.967Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T12:05:15.967Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 10
+}
+2026-08-10T12:08:48.119Z [INFO] GET /notes/6a79b3006fe58ec536adb9d9 200 {
+  "timestamp": "2026-08-10T12:08:48.119Z",
+  "level": "INFO",
+  "message": "GET /notes/6a79b3006fe58ec536adb9d9 200",
+  "method": "GET",
+  "url": "/notes/6a79b3006fe58ec536adb9d9",
+  "statusCode": 200,
+  "durationMs": 13
+}
+2026-08-10T12:08:48.129Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T12:08:48.129Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 20
+}
+2026-08-10T12:08:48.134Z [INFO] GET /notes/6a79b3006fe58ec536adb9d9 304 {
+  "timestamp": "2026-08-10T12:08:48.134Z",
+  "level": "INFO",
+  "message": "GET /notes/6a79b3006fe58ec536adb9d9 304",
+  "method": "GET",
+  "url": "/notes/6a79b3006fe58ec536adb9d9",
+  "statusCode": 304,
+  "durationMs": 11
+}
+2026-08-10T12:08:59.329Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T12:08:59.329Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 6
+}
+2026-08-10T15:54:47.613Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T15:54:47.613Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 5
+}
+2026-08-10T15:54:47.618Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T15:54:47.618Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 4
+}
+2026-08-10T15:54:47.698Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T15:54:47.698Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 7
+}
+2026-08-10T15:54:47.731Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T15:54:47.731Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 30
+}
+2026-08-10T15:54:49.179Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T15:54:49.179Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 3
+}
+2026-08-10T15:54:49.184Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T15:54:49.184Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 4
+}
+2026-08-10T15:54:49.254Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T15:54:49.254Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 6
+}
+2026-08-10T15:54:49.264Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T15:54:49.264Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 9
+}
+2026-08-10T15:55:20.891Z [INFO] GET /notes/6a79a923d41d5cd47e22ff5a 200 {
+  "timestamp": "2026-08-10T15:55:20.891Z",
+  "level": "INFO",
+  "message": "GET /notes/6a79a923d41d5cd47e22ff5a 200",
+  "method": "GET",
+  "url": "/notes/6a79a923d41d5cd47e22ff5a",
+  "statusCode": 200,
+  "durationMs": 5
+}
+2026-08-10T15:55:20.900Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T15:55:20.900Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 8
+}
+2026-08-10T15:55:20.902Z [INFO] GET /notes/6a79a923d41d5cd47e22ff5a 304 {
+  "timestamp": "2026-08-10T15:55:20.902Z",
+  "level": "INFO",
+  "message": "GET /notes/6a79a923d41d5cd47e22ff5a 304",
+  "method": "GET",
+  "url": "/notes/6a79a923d41d5cd47e22ff5a",
+  "statusCode": 304,
+  "durationMs": 8
+}
+2026-08-10T15:55:27.653Z [INFO] DELETE /notes/6a79a923d41d5cd47e22ff5a 200 {
+  "timestamp": "2026-08-10T15:55:27.653Z",
+  "level": "INFO",
+  "message": "DELETE /notes/6a79a923d41d5cd47e22ff5a 200",
+  "method": "DELETE",
+  "url": "/notes/6a79a923d41d5cd47e22ff5a",
+  "statusCode": 200,
+  "durationMs": 13
+}
+2026-08-10T15:55:27.707Z [INFO] GET /notes?page=1&limit=20&status=active 200 {
+  "timestamp": "2026-08-10T15:55:27.707Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 200",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 200,
+  "durationMs": 4
+}
+2026-08-10T15:56:54.014Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T15:56:54.014Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T15:56:54.023Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T15:56:54.023Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T15:57:30.830Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T15:57:30.830Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T15:57:30.832Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T15:57:30.832Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T15:57:34.142Z [INFO] MongoDB Connected {
+  "timestamp": "2026-08-10T15:57:34.142Z",
+  "level": "INFO",
+  "message": "MongoDB Connected"
+}
+2026-08-10T15:57:34.148Z [INFO] 🚀 Notes API is running on http://localhost:3000 {
+  "timestamp": "2026-08-10T15:57:34.148Z",
+  "level": "INFO",
+  "message": "🚀 Notes API is running on http://localhost:3000"
+}
+2026-08-10T19:43:49.171Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T19:43:49.171Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 22
+}
+2026-08-10T19:43:49.176Z [INFO] GET /users/profile 304 {
+  "timestamp": "2026-08-10T19:43:49.176Z",
+  "level": "INFO",
+  "message": "GET /users/profile 304",
+  "method": "GET",
+  "url": "/users/profile",
+  "statusCode": 304,
+  "durationMs": 4
+}
+2026-08-10T19:43:49.232Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T19:43:49.232Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 11
+}
+2026-08-10T19:43:49.239Z [INFO] GET /notes?page=1&limit=20&status=active 304 {
+  "timestamp": "2026-08-10T19:43:49.239Z",
+  "level": "INFO",
+  "message": "GET /notes?page=1&limit=20&status=active 304",
+  "method": "GET",
+  "url": "/notes?page=1&limit=20&status=active",
+  "statusCode": 304,
+  "durationMs": 6
+}

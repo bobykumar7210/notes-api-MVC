@@ -1,295 +1,457 @@
 # Notes API
 
-RESTful Notes backend built with **Node.js**, **Express**, and **MongoDB**. The project follows an MVC-inspired layered architecture with JWT authentication, role-based access control, soft-delete lifecycles, paginated search, and Cloudinary-backed profile image uploads.
+RESTful Notes backend built with **Node.js**, **Express**, and **MongoDB**. The project follows an MVC-inspired layered architecture with JWT authentication, role-based access control (`user` / `admin`), soft-delete lifecycles, paginated search, and Cloudinary-backed profile image uploads.
 
 ## Features
 
-- User registration and login with JWT authentication
-- Role-based access control (`user` / `admin`)
-- Soft-delete for users (`active` / `deleted`) with admin restore
-- Deleted users cannot log in or use JWT-protected routes
-- Notes CRUD scoped to the authenticated user
-- Note status lifecycle: `active` → `archived` → `deleted` (soft delete)
-- Trash notes auto hard-delete after **30 days** (MongoDB TTL on `deletedAt`)
-- Paginated note list with search (`q`) and status filter
-- Archive / restore note endpoints
-- Admin platform stats (`GET /users/stats`) for users and notes
-- Paginated admin user list with search
-- Profile image upload via Multer and Cloudinary
-- Request validation with `express-validator`
-- Password hashing with `bcryptjs`
-- Global rate limiting and login attempt throttling
-- Centralized error handling and request logging
+- **JWT Authentication & Authorization**: Secure signup, login, and bearer token verification (24-hour expiry).
+- **Role-Based Access Control (RBAC)**: Public registration defaults to `user` role; admin privileges are strictly guarded.
+- **User Lifecycle & Soft-Delete**: Admin can soft-delete and restore user accounts; deleted users are barred from login and protected endpoints.
+- **Scoped Note Management**: Notes CRUD is securely scoped to the authenticated user.
+- **Note Status Lifecycle**: `active` ➔ `archived` ➔ `deleted` (trash).
+- **Automated TTL Purge**: Soft-deleted notes in trash auto hard-delete after **30 days** using MongoDB TTL index on `deletedAt`.
+- **Search, Filter & Pagination**: Fast regex search (`q`) across note title/description or user username/email with page/limit metadata.
+- **Profile Image Uploads**: Image upload via Multer memory storage and streaming direct to Cloudinary.
+- **Input Validation & Sanitization**: Strict input validation using `express-validator`.
+- **Security & Rate Limiting**: Passwords hashed with `bcryptjs` (passwords automatically stripped from JSON outputs); global and login-specific IP rate limiting.
+- **Structured Logging & Error Handling**: Request logging to console and `logs/app.log`, centralized error formatting, and 404 JSON fallback.
+- **Developer Experience**: Includes VS Code REST Client (`docs/api.http`), VS Code debug configurations (`.vscode/launch.json`), and Postman collection & environment.
+
+---
 
 ## Tech Stack
 
 | Layer | Technology |
 | --- | --- |
 | Runtime | Node.js |
-| Framework | Express |
+| Framework | Express 4 |
 | Database | MongoDB + Mongoose |
-| Auth | JSON Web Tokens (`jsonwebtoken`) |
-| Security | `bcryptjs`, `express-rate-limit` |
+| Authentication | JSON Web Tokens (`jsonwebtoken`) |
+| Password Hashing | `bcryptjs` |
+| Rate Limiting | `express-rate-limit` |
 | Validation | `express-validator` |
-| Uploads | Multer + Cloudinary |
+| File Uploads | Multer + Cloudinary |
+| Testing | Jest |
+| Logging | Custom structured file & console logger |
+
+---
+
+## Base URL
+
+All API routes are served under the `/api` prefix:
+
+```text
+http://localhost:3000/api
+```
+
+---
 
 ## Quick Start
 
-For a full walkthrough (MongoDB, Cloudinary, environment variables, verification), see the **[Setup Guide](docs/setup.md)**.
+For full installation and environment instructions, see the **[Setup Guide](docs/setup.md)**.
 
 ```bash
 # 1. Install dependencies
 npm install
 
-# 2. Configure environment
+# 2. Configure environment variables
 cp .env.example .env
 # Edit .env with your MongoDB URI, JWT secret, and Cloudinary credentials
 
-# 3. Bootstrap the first admin (once)
+# 3. Bootstrap the first admin user (run once)
 npm run seed:admin
 
-# 4. Run the API
-npm run dev    # development (nodemon)
+# 4. Start the server
+npm run dev    # Development mode (nodemon auto-restart)
 # or
-npm start      # production
+npm start      # Production mode
 ```
 
-The API listens on `http://localhost:3000` by default.
+The server listens on `http://localhost:3000` by default.
+
+---
 
 ## Scripts
 
 | Command | Description |
 | --- | --- |
 | `npm start` | Start the server with Node |
-| `npm run dev` | Start with Nodemon (auto-restart) |
-| `npm test` | Run Jest tests |
-| `npm run seed:admin` | Create the first admin from seed env vars |
+| `npm run dev` | Start the server with Nodemon (auto-reload on file change) |
+| `npm test` | Run all Jest test suites (`jest --runInBand`) |
+| `npm run seed:admin` | Bootstrap the initial admin user using `.env` seed variables |
 
-Seed vars (see `.env.example`): `SEED_ADMIN_USERNAME`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`.
+---
 
-## Authentication
+## Authentication & Authorization
 
-1. Register a user via `POST /users/register`
-2. Log in via `POST /users/login` to receive a JWT
-3. Send the token on protected routes:
+1. Register a user via `POST /api/users/register` (defaults to `user` role).
+2. Authenticate via `POST /api/users/login` to receive a JWT.
+3. Attach the token in the `Authorization` header for protected endpoints:
 
 ```http
 Authorization: Bearer <token>
 ```
 
-- Tokens expire after **24 hours**
-- New accounts from `POST /users/register` always receive the `user` role
-- Soft-deleted accounts cannot log in; existing JWTs are rejected by auth middleware
-- Bootstrap the first admin with `npm run seed:admin` (no public admin registration)
+- Tokens expire after **24 hours**.
+- Public registration creates only standard `user` accounts. Admin accounts are created via `npm run seed:admin` or by an existing admin via `POST /api/users/admins`.
+- Soft-deleted accounts cannot log in, and existing JWT tokens belonging to soft-deleted accounts are rejected by authentication middleware.
 
-## Status model
+---
 
-### Notes
+## Status Models & Lifecycle
 
-| Status | Meaning |
+### Notes Lifecycle
+
+```text
+[ active ] ──(archive)──> [ archived ] ──(restore)──> [ active ]
+    │                           │
+ (delete)                    (delete)
+    │                           │
+    ▼                           ▼
+[ deleted ] ───(restore)───> [ active ]
+    │
+ (30 Days TTL)
+    │
+    ▼
+[ Hard Deleted / Purged from DB ]
+```
+
+| Status | Behavior |
 | --- | --- |
-| `active` | Default; shown in the main notes list |
-| `archived` | Hidden from active list; editable; restorable |
-| `deleted` | Soft-deleted (trash); restorable; purged after 30 days via TTL |
+| `active` | Default status; visible in primary notes list. |
+| `archived` | Hidden from active list; editable; restorable to `active`. |
+| `deleted` | Moved to trash; restorable to `active`; auto hard-deleted by MongoDB TTL after **30 days**. |
 
-### Users
+### Users Lifecycle
 
-| Status | Meaning |
+| Status | Behavior |
 | --- | --- |
-| `active` | Default; can log in |
-| `deleted` | Soft-deleted by admin; can be restored; no login |
+| `active` | Default status; can log in and access protected routes. |
+| `deleted` | Soft-deleted by admin; barred from login; restorable by admin. |
+
+---
 
 ## API Reference
 
-### Health Check
+### 1. Health Check
 
 | Method | Endpoint | Auth | Description |
-| --- | --- | --- | --- |
-| `GET` | `/` | No | Welcome message and API version |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api` | None | Welcome message and API version |
 
-### Users
-
-| Method | Endpoint | Auth | Description |
-| --- | --- | --- | --- |
-| `POST` | `/users/register` | No | Register a new **user** (role always `user`) |
-| `POST` | `/users/login` | No | Authenticate and return a JWT |
-| `GET` | `/users/profile` | JWT | Get the authenticated user profile |
-| `POST` | `/users/profile/image` | JWT | Upload a profile image |
-| `POST` | `/users/admins` | Admin JWT | Create a new admin user |
-| `GET` | `/users/stats` | Admin JWT | Platform user + notes counts |
-| `GET` | `/users` | Admin JWT | Paginated user list |
-| `PATCH` | `/users/:id/restore` | Admin JWT | Restore a soft-deleted user |
-| `DELETE` | `/users/:id` | Admin JWT | Soft-delete a user |
-
-#### Register
-
+#### Example Request & Response
 ```http
-POST /users/register
+GET /api
+```
+```json
+{
+  "message": "Welcome to Notes API",
+  "version": "1.0.0"
+}
+```
+
+---
+
+### 2. User & Authentication Endpoints
+
+| Method | Endpoint | Auth | Role | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/api/users/register` | None | Public | Register a new user |
+| `POST` | `/api/users/login` | None | Public | Login with username/password to receive JWT |
+| `GET` | `/api/users/profile` | JWT | `user` / `admin` | Get authenticated user profile |
+| `POST` | `/api/users/profile/image` | JWT | `user` / `admin` | Upload profile avatar to Cloudinary |
+| `POST` | `/api/users/admins` | JWT | `admin` | Create a new admin account |
+| `GET` | `/api/users/stats` | JWT | `admin` | Platform statistics (users and notes breakdown) |
+| `GET` | `/api/users` | JWT | `admin` | List users (paginated, filterable, searchable) |
+| `PATCH` | `/api/users/:id/restore` | JWT | `admin` | Restore a soft-deleted user |
+| `DELETE` | `/api/users/:id` | JWT | `admin` | Soft-delete a user account |
+
+#### Register User
+```http
+POST /api/users/register
 Content-Type: application/json
 
 {
-  "username": "jane",
+  "username": "janedoe",
   "email": "jane@example.com",
-  "password": "secure-password"
+  "password": "securepassword123"
 }
 ```
+*Validation:* `username` (required), `email` (valid email, unique), `password` (min 6 chars). Role is automatically set to `user`.
 
-- `username` — required
-- `email` — required, valid email
-- `password` — required, min 6 characters
-- `role` in the body is ignored (always `user`)
-
-#### Login
-
+#### Login User
 ```http
-POST /users/login
+POST /api/users/login
 Content-Type: application/json
 
 {
-  "username": "jane",
-  "password": "secure-password"
+  "username": "janedoe",
+  "password": "securepassword123"
 }
 ```
-
+*Response:*
 ```json
 {
   "success": true,
-  "token": "<jwt>"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
+*Rate limit:* Max 5 attempts per 15 minutes per IP.
 
-#### Admin stats
-
+#### Get Profile
 ```http
-GET /users/stats
-Authorization: Bearer <admin-token>
+GET /api/users/profile
+Authorization: Bearer <token>
 ```
-
+*Response:*
 ```json
 {
   "success": true,
   "data": {
-    "users": { "total": 10, "admins": 2, "normal": 8, "deleted": 1 },
-    "notes": { "total": 40, "active": 30, "archived": 5, "deleted": 5 }
+    "_id": "64e0a7f1234567890abcdef1",
+    "username": "janedoe",
+    "email": "jane@example.com",
+    "profileImage": "https://res.cloudinary.com/...",
+    "role": "user",
+    "status": "active",
+    "deletedAt": null,
+    "createdAt": "2026-08-26T10:00:00.000Z",
+    "updatedAt": "2026-08-26T10:00:00.000Z"
   }
 }
 ```
 
-#### List users (paginated)
-
+#### Upload Profile Image
 ```http
-GET /users?page=1&limit=20&status=active&q=jane
-Authorization: Bearer <admin-token>
+POST /api/users/profile/image
+Authorization: Bearer <token>
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="profileImage"; filename="avatar.png"
+Content-Type: image/png
+
+<binary data>
+--boundary--
 ```
+*Allowed MIME types:* `image/jpeg`, `image/jpg`, `image/png`, `image/webp`, `image/gif` (max 5 MB).
 
-| Query | Default | Notes |
-| --- | --- | --- |
-| `page` | `1` | Positive integer |
-| `limit` | `20` | 1–100 |
-| `status` | `active` | `active` or `deleted` |
-| `q` | — | Search username or email |
+#### Create Admin User (Admin only)
+```http
+POST /api/users/admins
+Authorization: Bearer <admin-token>
+Content-Type: application/json
 
-```json
 {
-  "success": true,
-  "data": [/* users without passwords */],
-  "meta": { "page": 1, "limit": 20, "total": 3, "totalPages": 1 }
+  "username": "admin2",
+  "email": "admin2@example.com",
+  "password": "adminpassword123"
 }
 ```
 
-#### Soft-delete / restore user
-
+#### Admin Stats (Admin only)
 ```http
-DELETE /users/:id
-Authorization: Bearer <admin-token>
-
-PATCH /users/:id/restore
+GET /api/users/stats
 Authorization: Bearer <admin-token>
 ```
+*Response:*
+```json
+{
+  "success": true,
+  "data": {
+    "users": {
+      "total": 10,
+      "admins": 2,
+      "normal": 8,
+      "deleted": 1
+    },
+    "notes": {
+      "total": 35,
+      "active": 30,
+      "archived": 5,
+      "deleted": 5
+    }
+  }
+}
+```
+- `users.total`: Total active users (`admins` + `normal`). `users.deleted` tracked separately.
+- `notes.total`: Total non-deleted notes (`active` + `archived`). `notes.deleted` tracked separately.
 
-Admins cannot soft-delete their own account.
-
-#### Upload profile image
-
+#### List Users (Admin only)
 ```http
-POST /users/profile/image
-Authorization: Bearer <token>
-Content-Type: multipart/form-data
+GET /api/users?page=1&limit=20&status=active&q=jane
+Authorization: Bearer <admin-token>
+```
+| Query Param | Default | Allowed Values / Validation |
+| :--- | :--- | :--- |
+| `page` | `1` | Positive integer |
+| `limit` | `20` | `1` – `100` |
+| `status` | `active` | `active`, `deleted` |
+| `q` | `""` | Search string matching username or email |
+
+*Response:*
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "64e0a7f1234567890abcdef1",
+      "username": "janedoe",
+      "email": "jane@example.com",
+      "role": "user",
+      "status": "active"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 20,
+    "total": 1,
+    "totalPages": 1
+  }
+}
 ```
 
-| Field | Type | Notes |
-| --- | --- | --- |
-| `profileImage` | file | Required |
+#### Soft-Delete / Restore User (Admin only)
+```http
+DELETE /api/users/:id
+Authorization: Bearer <admin-token>
 
-Allowed: `image/jpeg`, `image/jpg`, `image/png`, `image/webp`, `image/gif` — max **5 MB**.
+PATCH /api/users/:id/restore
+Authorization: Bearer <admin-token>
+```
+*Note:* Admins cannot delete their own account.
 
-### Notes
+---
 
-All note endpoints require a valid JWT. Notes are scoped to the authenticated user.
+### 3. Notes Endpoints
+
+All note routes require a valid JWT (`Authorization: Bearer <token>`) and are automatically scoped to the authenticated user.
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/notes` | Create a note (`status: active`) |
-| `GET` | `/notes` | List notes (paginated / searchable / filterable) |
-| `GET` | `/notes/:id` | Get a note (not deleted) |
-| `PUT` | `/notes/:id` | Update title/description (active or archived) |
-| `PATCH` | `/notes/:id/archive` | Archive an active note |
-| `PATCH` | `/notes/:id/restore` | Restore archived or deleted → active |
-| `DELETE` | `/notes/:id` | Soft-delete → trash |
+| :--- | :--- | :--- |
+| `POST` | `/api/notes` | Create a new note (`status: active`) |
+| `GET` | `/api/notes` | List notes (paginated / searchable / filterable) |
+| `GET` | `/api/notes/:id` | Get note details by ID (non-deleted) |
+| `PUT` | `/api/notes/:id` | Update note title and description (active or archived) |
+| `PATCH` | `/api/notes/:id/archive` | Archive an active note |
+| `PATCH` | `/api/notes/:id/restore` | Restore archived or deleted note to `active` |
+| `DELETE` | `/api/notes/:id` | Soft-delete note to trash (`status: deleted`) |
 
-#### List notes
-
+#### Create Note
 ```http
-GET /notes?page=1&limit=20&status=active&q=roadmap
-Authorization: Bearer <token>
-```
-
-| Query | Default | Notes |
-| --- | --- | --- |
-| `page` | `1` | Positive integer |
-| `limit` | `20` | 1–100 |
-| `status` | `active` | `active`, `archived`, or `deleted` |
-| `q` | — | Search title or description |
-
-```json
-{
-  "success": true,
-  "data": [/* notes */],
-  "meta": { "page": 1, "limit": 20, "total": 42, "totalPages": 3 }
-}
-```
-
-#### Create a note
-
-```http
-POST /notes
+POST /api/notes
 Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "title": "Prepare project update",
-  "description": "Review the roadmap and deployment checklist"
+  "title": "Quarterly Planning",
+  "description": "Prepare architecture review and sprint backlog"
 }
 ```
+*Validation:* `title` (required, max 255 chars, cannot be `"admin"`), `description` (optional string, max 2000 chars).
 
-- `title` — required, max 255; cannot be `"admin"`
-- `description` — optional, max 2000
+#### List Notes
+```http
+GET /api/notes?page=1&limit=20&status=active&q=Planning
+Authorization: Bearer <token>
+```
+| Query Param | Default | Allowed Values / Validation |
+| :--- | :--- | :--- |
+| `page` | `1` | Positive integer |
+| `limit` | `20` | `1` – `100` |
+| `status` | `active` | `active`, `archived`, `deleted` |
+| `q` | `""` | Search query across title and description |
 
-## Response Format
-
-Success:
-
+*Response:*
 ```json
 {
   "success": true,
-  "data": {}
+  "data": [
+    {
+      "_id": "64e0b9a1234567890abcdef2",
+      "userId": "64e0a7f1234567890abcdef1",
+      "title": "Quarterly Planning",
+      "description": "Prepare architecture review and sprint backlog",
+      "status": "active",
+      "deletedAt": null,
+      "createdAt": "2026-08-26T11:00:00.000Z",
+      "updatedAt": "2026-08-26T11:00:00.000Z"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 20,
+    "total": 1,
+    "totalPages": 1
+  }
 }
 ```
 
-Paginated lists also include `meta`.
+#### Get Note by ID
+```http
+GET /api/notes/:id
+Authorization: Bearer <token>
+```
 
-Error:
+#### Update Note
+```http
+PUT /api/notes/:id
+Authorization: Bearer <token>
+Content-Type: application/json
 
+{
+  "title": "Updated Quarterly Planning",
+  "description": "Updated sprint items and timelines"
+}
+```
+
+#### Archive Note
+```http
+PATCH /api/notes/:id/archive
+Authorization: Bearer <token>
+```
+
+#### Restore Note
+```http
+PATCH /api/notes/:id/restore
+Authorization: Bearer <token>
+```
+Restores a note with status `archived` or `deleted` back to `active` and resets `deletedAt` to `null`.
+
+#### Soft-Delete Note (Trash)
+```http
+DELETE /api/notes/:id
+Authorization: Bearer <token>
+```
+Sets note status to `deleted` and timestamps `deletedAt`. The note will be permanently purged after 30 days.
+
+---
+
+## Response & Error Format
+
+### Success Response
+```json
+{
+  "success": true,
+  "data": { ... }
+}
+```
+
+### Paginated Success Response
+```json
+{
+  "success": true,
+  "data": [ ... ],
+  "meta": {
+    "page": 1,
+    "limit": 20,
+    "total": 42,
+    "totalPages": 3
+  }
+}
+```
+
+### Error Response
 ```json
 {
   "success": false,
@@ -298,52 +460,139 @@ Error:
 }
 ```
 
+---
+
 ## Rate Limiting
 
-| Limiter | Scope | Limit |
-| --- | --- | --- |
-| Global | All routes | 100 requests / 15 minutes / IP |
-| Login | `POST /users/login` | 5 attempts / 15 minutes / IP |
+| Limiter | Target | Limit | Window | Exceeded Response |
+| :--- | :--- | :--- | :--- | :--- |
+| **Global** | All `/api` routes | 100 requests | 15 minutes / IP | `HTTP 429 Too many requests` |
+| **Login** | `POST /api/users/login` | 5 attempts | 15 minutes / IP | `HTTP 429 Too many login attempts` |
 
-Exceeded limits return HTTP `429`.
+---
+
+## VS Code & Postman Integration
+
+### 1. VS Code REST Client (`docs/api.http`)
+You can execute and test all API requests directly inside VS Code without switching tools:
+1. Install the **REST Client** extension (`humao.rest-client`) in VS Code.
+2. Open [`docs/api.http`](docs/api.http).
+3. Set your token variables at the top of the file (`@token`, `@adminToken`).
+4. Click **Send Request** directly above any request block.
+
+### 2. VS Code Launch & Debug (`.vscode/launch.json`)
+Pre-configured launch profiles for VS Code:
+- **🚀 Launch Notes API (Nodemon Dev)**: Start server with nodemon auto-restart and debugging attached.
+- **▶️ Launch Notes API (Node)**: Standard node execution.
+- **🧪 Run Jest Tests**: Execute test suite inside the debugger.
+- **🌱 Seed Admin User**: Run admin bootstrap script.
+
+### 3. Postman Collection
+Import the pre-configured Postman assets in `docs/postman/`:
+- Collection: [`docs/postman/notes-api.postman_collection.json`](docs/postman/notes-api.postman_collection.json)
+- Environment: [`docs/postman/notes-api.postman_environment.json`](docs/postman/notes-api.postman_environment.json) (pre-set to `baseUrl: http://localhost:3000/api`)
+
+---
 
 ## Project Structure
 
 ```text
 notes-api-MVC/
-├── config/           # Database and Cloudinary configuration
-├── controllers/      # HTTP request handlers
-├── docs/             # Setup and supporting documentation
-├── middlewares/      # Auth, roles, validation, errors, logging, uploads, rate limits
-├── models/           # Mongoose schemas (status, deletedAt, TTL)
-├── repositories/     # Data access layer
-├── routes/           # Route definitions
-├── scripts/          # seedAdmin.js
-├── services/         # Business logic
-├── tests/            # Jest tests
-├── utils/            # Shared utilities and constants
-├── validators/       # express-validator rule sets
-├── app.js            # Application entry point
-├── .env.example
+├── .vscode/                 # VS Code launch configurations, recommended extensions & settings
+│   ├── extensions.json
+│   ├── launch.json
+│   └── settings.json
+├── config/                  # Database (MongoDB) and Cloudinary configuration
+│   ├── cloudinary.js
+│   └── db.js
+├── controllers/             # Request handling and HTTP response formatting
+│   ├── noteController.js
+│   └── userController.js
+├── docs/                    # Documentation and API testing tools
+│   ├── postman/             # Postman collection & environment
+│   │   ├── notes-api.postman_collection.json
+│   │   └── notes-api.postman_environment.json
+│   ├── api.http             # VS Code REST Client collection
+│   └── setup.md             # Local environment & setup guide
+├── middlewares/             # Auth, role check, uploads, rate limit, logging, errors
+│   ├── validation/
+│   │   └── validationMiddleware.js
+│   ├── authMiddleware.js
+│   ├── errorHandler.js
+│   ├── logger.js
+│   ├── rateLimiter.js
+│   ├── roleMiddleware.js
+│   └── uploadMiddleware.js
+├── models/                  # Mongoose models with TTL indexes & schema transforms
+│   ├── Note.js
+│   └── User.js
+├── repositories/            # Data access layer for database queries
+│   ├── noteRepository.js
+│   └── userRepository.js
+├── routes/                  # Express route definitions
+│   ├── indexRoute.js        # Main router mounted on /api
+│   ├── noteRoutes.js
+│   └── userRoute.js
+├── scripts/                 # Utility scripts
+│   └── seedAdmin.js         # Initial admin creation script
+├── services/                # Business logic layer
+│   ├── cloudinaryService.js
+│   ├── noteService.js
+│   └── userService.js
+├── tests/                   # Jest test suites
+│   ├── jest.test.js
+│   ├── lifecycle.test.js
+│   ├── logger.test.js
+│   ├── uploadMiddleware.test.js
+│   └── userModel.test.js
+├── utils/                   # Custom error classes and global constants
+│   ├── AppError.js
+│   └── constants.js
+├── validators/              # express-validator validation rules
+│   ├── note.validator.js
+│   └── user.validator.js
+├── app.js                   # Application entry point & middleware pipeline
+├── .env.example             # Template for required environment variables
+├── .gitignore
 └── package.json
 ```
 
-## Architecture
+---
+
+## Architecture Flow
 
 ```text
-Request → Routes → Middleware (auth / validation / rate limit)
-                 → Controllers
-                 → Services
-                 → Repositories
-                 → Models / MongoDB
+HTTP Request
+     │
+     ▼
+[ Express Router (/api) ]
+     │
+     ▼
+[ Middlewares ] ────► Rate Limiter, Request Logger, Multer Upload, JWT Auth, Role Guard, Input Validator
+     │
+     ▼
+[ Controllers ] ────► Extracts request payload & params, invokes service layer, sends HTTP response
+     │
+     ▼
+[ Services ] ───────► Business logic, password hashing, Cloudinary streaming, access checks
+     │
+     ▼
+[ Repositories ] ───► MongoDB queries, pagination math, regex search filters
+     │
+     ▼
+[ Models / MongoDB ]► Mongoose schemas, TTL expiration index (30 days), toJSON transformations
 ```
+
+---
 
 ## Documentation
 
-| Document | Description |
-| --- | --- |
-| [Setup Guide](docs/setup.md) | Prerequisites, environment configuration, and local run steps |
+- **[Setup Guide](docs/setup.md)**: Detailed instructions for MongoDB, Cloudinary, environment setup, and verification.
+- **[VS Code REST Client](docs/api.http)**: Interactive in-editor HTTP request file.
+- **[Postman Collection](docs/postman/notes-api.postman_collection.json)**: Ready-to-import Postman workspace.
+
+---
 
 ## License
 
-This project is intended for learning and development purposes.
+This project is open-source and intended for study, learning, and development purposes.
